@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fd581cd2-c157-444b-b6fb-e3e20b718551" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/migrations/migrate.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/migrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/migrate.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ent/schema/schema.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/migrate.go" beforeDir="false" afterPath="$PROJECT_DIR$/migrations/migrate.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
