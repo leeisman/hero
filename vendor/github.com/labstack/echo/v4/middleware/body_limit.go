@@ -5,7 +5,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/bytes"
 )
 
@@ -105,6 +105,7 @@ func (r *limitedReader) Close() error {
 func (r *limitedReader) Reset(reader io.ReadCloser, context echo.Context) {
 	r.reader = reader
 	r.context = context
+	r.read = 0
 }
 
 func limitedReaderPool(c BodyLimitConfig) sync.Pool {
