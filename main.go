@@ -1,9 +1,9 @@
 package main
 
 import (
-	"hero/routes"
+	"hero/cmd"
 )
 
 func main() {
-	routes.Run()
+	cmd.Execute()
 }

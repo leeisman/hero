@@ -16,3 +16,7 @@ func Str(key string, value string) *zerolog.Event {
 func Debug(msg string) {
 	log.Debug().Msg(msg)
 }
+
+func Error(msg string) {
+	log.Error().Msg(msg)
+}

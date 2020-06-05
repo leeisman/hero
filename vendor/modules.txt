@@ -1,5 +1,29 @@
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 github.com/dgrijalva/jwt-go
+# github.com/facebookincubator/ent v0.2.2
+## explicit
+github.com/facebookincubator/ent
+github.com/facebookincubator/ent/dialect
+github.com/facebookincubator/ent/dialect/sql
+github.com/facebookincubator/ent/dialect/sql/schema
+github.com/facebookincubator/ent/dialect/sql/sqlgraph
+github.com/facebookincubator/ent/examples/start/ent
+github.com/facebookincubator/ent/examples/start/ent/car
+github.com/facebookincubator/ent/examples/start/ent/group
+github.com/facebookincubator/ent/examples/start/ent/migrate
+github.com/facebookincubator/ent/examples/start/ent/predicate
+github.com/facebookincubator/ent/examples/start/ent/schema
+github.com/facebookincubator/ent/examples/start/ent/user
+github.com/facebookincubator/ent/schema/edge
+github.com/facebookincubator/ent/schema/field
+github.com/facebookincubator/ent/schema/index
+# github.com/go-sql-driver/mysql v1.5.1-0.20200311113236-681ffa848bae
+## explicit
+github.com/go-sql-driver/mysql
+# github.com/google/uuid v1.1.1
+github.com/google/uuid
+# github.com/inconshreveable/mousetrap v1.0.0
+github.com/inconshreveable/mousetrap
 # github.com/labstack/echo/v4 v4.1.16
 ## explicit
 github.com/labstack/echo/v4
@@ -19,6 +43,11 @@ github.com/rs/zerolog
 github.com/rs/zerolog/internal/cbor
 github.com/rs/zerolog/internal/json
 github.com/rs/zerolog/log
+# github.com/spf13/cobra v1.0.0
+## explicit
+github.com/spf13/cobra
+# github.com/spf13/pflag v1.0.5
+github.com/spf13/pflag
 # github.com/stretchr/testify v1.6.0
 ## explicit
 # github.com/valyala/bytebufferpool v1.0.0
@@ -34,7 +63,9 @@ golang.org/x/net/http2
 golang.org/x/net/http2/h2c
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
-# golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae
+# golang.org/x/sys v0.0.0-20200602225109-6fdc65e7d980
+## explicit
+golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
 golang.org/x/text/secure/bidirule
