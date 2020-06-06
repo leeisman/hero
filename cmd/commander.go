@@ -14,7 +14,6 @@ var (
 
 func Execute() {
 	commander.AddCommand(Server)
-	commander.AddCommand(Migrate)
 	if err := commander.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
