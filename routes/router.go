@@ -7,11 +7,14 @@ import (
 	"encoding/json"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"hero/configs"
 	"hero/pkg/logger"
 	"io/ioutil"
 )
 
 func Run() {
+	port := configs.Get("server.port")
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -44,5 +47,5 @@ func Run() {
 	}))
 	InitApi(e)
 	InitAdmin(e)
-	e.Logger.Fatal(e.Start(":9000"))
+	e.Logger.Fatal(e.Start(":" + port))
 }

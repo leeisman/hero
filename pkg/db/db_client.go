@@ -2,13 +2,14 @@ package db
 
 import (
 	"context"
+	"hero/configs"
 	"hero/database/ent"
 	"hero/pkg/logger"
 	"time"
 )
 
 func Client() *ent.Client {
-	localDataSourceName := "root:root@tcp(localhost:3306)/hero?parseTime=true"
+	localDataSourceName := configs.Get("database.url")
 	client, err := ent.Open("mysql", localDataSourceName)
 	if err != nil {
 		logger.Error("failed connecting to mysql: " + err.Error())
