@@ -36,6 +36,7 @@ or
 - Body:
 ```
 {
+    "fb_user_id": "12345684",
     "record_id": "UAR_breaql3ipt3dp3hsffq0",
     "score": 1000
 }
