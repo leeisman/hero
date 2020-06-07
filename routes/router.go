@@ -25,26 +25,29 @@ func Run() {
 		logger.Print(c.Request().URL, "BodyDump reqBody", requestID, string(reqBody))
 		logger.Print(c.Request().URL, "BodyDump resBody", requestID, string(resBody))
 	}))
-	e.Use(middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
-		requestID := c.Response().Header().Get(echo.HeaderXRequestID)
-		body := &struct {
-			FbUserID string `json:"fb_user_id"`
-		}{}
-		if c.Request().Body != nil { // Read
-			reqBody, _ := ioutil.ReadAll(c.Request().Body)
-			err := json.Unmarshal(reqBody, body)
-			if err != nil {
-				return false, nil
+	//安全性驗證
+	if configs.EnvPath != "local" {
+		e.Use(middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
+			requestID := c.Response().Header().Get(echo.HeaderXRequestID)
+			body := &struct {
+				FbUserID string `json:"fb_user_id"`
+			}{}
+			if c.Request().Body != nil { // Read
+				reqBody, _ := ioutil.ReadAll(c.Request().Body)
+				err := json.Unmarshal(reqBody, body)
+				if err != nil {
+					return false, nil
+				}
+				c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(reqBody)) // Reset
 			}
-			c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(reqBody)) // Reset
-		}
 
-		h := md5.New()
-		h.Write([]byte(body.FbUserID))
-		md5Key := hex.EncodeToString(h.Sum(nil))
-		logger.Print(c.Request().URL, "KeyAuth", requestID, body.FbUserID, key, md5Key)
-		return key == md5Key, nil
-	}))
+			h := md5.New()
+			h.Write([]byte(body.FbUserID))
+			md5Key := hex.EncodeToString(h.Sum(nil))
+			logger.Print(c.Request().URL, "KeyAuth", requestID, body.FbUserID, key, md5Key)
+			return key == md5Key, nil
+		}))
+	}
 	InitApi(e)
 	InitAdmin(e)
 	e.Logger.Fatal(e.Start(":" + port))

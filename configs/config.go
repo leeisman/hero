@@ -9,13 +9,13 @@ import (
 
 var (
 	cacheMap map[string]string
-	envPath  string
+	EnvPath  string
 )
 
 func init() {
 	viper.SetConfigType("yaml")
 	cacheMap = make(map[string]string)
-	envPath = Get("env.env")
+	EnvPath = Get("env.env")
 }
 
 func Get(target string) string {
@@ -23,8 +23,8 @@ func Get(target string) string {
 }
 
 func setPath(path string) {
-	if envPath != "" {
-		path = envPath + "/" + path
+	if EnvPath != "" {
+		path = EnvPath + "/" + path
 	}
 
 	dir, err := filepath.Abs("./configs/" + path)
