@@ -41,7 +41,7 @@ Md5 雜湊加上 fb user ID：
 ```  
 {  
     "fb_user_id": "12345684",  
-    "record_id": "UAR_breaql3ipt3dp3hsffq0",  
+    "record_id": "UAR_breaql3ipt3dp3hsffq0", //從開始遊戲生成
     "score": 1000  
 }  
 ```  
