@@ -1,0 +1,1 @@
+url: "root:root@tcp(localhost:3306)/hero?parseTime=true"

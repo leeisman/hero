@@ -1,1 +1,2 @@
-url: "root:root@tcp(localhost:3306)/hero?parseTime=true"
+mysql_url: "root:root@tcp(localhost:3306)/hero?parseTime=true"
+redis_url: "localhost:6379"

@@ -1,4 +1,4 @@
-package db
+package mysql
 
 import (
 	"context"
@@ -8,8 +8,12 @@ import (
 	"time"
 )
 
+var (
+	defaultClient *ent.Client
+)
+
 func Client() *ent.Client {
-	localDataSourceName := configs.Get("database.url")
+	localDataSourceName := configs.Get("database.mysql_url")
 	client, err := ent.Open("mysql", localDataSourceName)
 	if err != nil {
 		logger.Error("failed connecting to mysql: " + err.Error())

@@ -4,12 +4,12 @@ import (
 	"context"
 	_ "github.com/go-sql-driver/mysql"
 	"hero/database/ent/migrate"
-	"hero/pkg/db"
+	"hero/pkg/db/mysql"
 	"hero/pkg/logger"
 )
 
 func AutoMigrate() {
-	client := db.Client()
+	client := mysql.Client()
 	defer client.Close()
 	ctx := context.Background()
 	// Run migration.

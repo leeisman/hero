@@ -23,7 +23,6 @@ func Get(target string) string {
 }
 
 func setPath(path string) {
-
 	if envPath != "" {
 		path = envPath + "/" + path
 	}

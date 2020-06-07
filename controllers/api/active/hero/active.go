@@ -8,6 +8,8 @@ import (
 	"hero/controllers"
 	"hero/database/ent"
 	"hero/enums"
+	"hero/pkg/db/redis"
+	"hero/pkg/logger"
 	userRepository "hero/repositories/user"
 	userActiveRecordRepository "hero/repositories/user_active_record"
 	"time"
@@ -102,6 +104,9 @@ func Record(c echo.Context) error {
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
+
+	result := redis.Client().Incr(ctx, enums.RedisFinishedGameCount)
+	logger.Print(enums.RedisFinishedGameCount, result)
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
