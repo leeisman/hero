@@ -38,7 +38,14 @@ func Printf(format string, v ...interface{}) {
 }
 
 func Print(v ...interface{}) {
-	log.Print(v...)
+	data := ""
+	for _, subData := range v {
+		value, ok := subData.(string)
+		if ok {
+			data += value + " | "
+		}
+	}
+	log.Print(data)
 }
 
 func Str(key string, value string) *zerolog.Event {

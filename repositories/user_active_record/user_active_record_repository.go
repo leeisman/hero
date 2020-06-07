@@ -20,3 +20,7 @@ func Create(ctx context.Context, userActiveRecord *ent.UserActiveRecord) (*ent.U
 		SetNillableUpdatedAt(userActiveRecord.UpdatedAt).
 		Save(ctx)
 }
+
+func FindByID(ctx context.Context, ID string) (*ent.UserActiveRecord, error) {
+	return db.Client().UserActiveRecord.Get(ctx, ID)
+}

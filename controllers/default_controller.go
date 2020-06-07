@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"hero/pkg/logger"
 	"net/http"
@@ -12,8 +13,8 @@ type Response struct {
 	Data   interface{} `json:"data"`
 }
 
-func ResponseFail(err error, endPoint string, c echo.Context) error {
-	logger.Str(endPoint, err.Error()).Msg("")
+func ResponseFail(err error, c echo.Context) error {
+	logger.Error(fmt.Sprintf("%s | %s", c.Request().RequestURI, err.Error()))
 	response := &Response{
 		Msg:    err.Error(),
 		Status: false,

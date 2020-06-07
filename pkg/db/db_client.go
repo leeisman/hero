@@ -8,7 +8,7 @@ import (
 )
 
 func Client() *ent.Client {
-	localDataSourceName := "root:root@tcp(localhost:3306)/hero"
+	localDataSourceName := "root:root@tcp(localhost:3306)/hero?parseTime=true"
 	client, err := ent.Open("mysql", localDataSourceName)
 	if err != nil {
 		logger.Error("failed connecting to mysql: " + err.Error())

@@ -7,7 +7,7 @@ import (
 	"hero/pkg/db"
 )
 
-func FindUserBySocialUserID(ctx context.Context, socialUserID string) (*ent.User, error) {
+func FindBySocialUserID(ctx context.Context, socialUserID string) (*ent.User, error) {
 	return db.Client().User.Query().
 		Where(
 			tableUser.And(
@@ -17,7 +17,7 @@ func FindUserBySocialUserID(ctx context.Context, socialUserID string) (*ent.User
 		First(ctx)
 }
 
-func CreateUser(ctx context.Context, user *ent.User) (*ent.User, error) {
+func Create(ctx context.Context, user *ent.User) (*ent.User, error) {
 	return db.Client().User.Create().
 		SetID(user.ID).
 		SetSocialUserID(*user.SocialUserID).

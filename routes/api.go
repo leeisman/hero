@@ -16,6 +16,5 @@ func initActiveHero(api *echo.Group) {
 	activeHero := api.Group("/active/hero")
 	activeHero.POST("/play", hero.Play)
 	activeHero.POST("/record", hero.Record)
-	activeHero.POST("/share", hero.Share)
-	activeHero.POST("/download", hero.Download)
+	activeHero.POST("/tracking", hero.Tracking)
 }
