@@ -11,12 +11,13 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "social_user_id", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "social_avatar_url", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "social_email", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "social_name", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "social_type", Type: field.TypeString, Nullable: true, Default: ""},
-		{Name: "social_payload", Type: field.TypeString, Nullable: true, Default: ""},
+		{Name: "social_user_id", Type: field.TypeString, Default: ""},
+		{Name: "social_avatar_url", Type: field.TypeString, Default: ""},
+		{Name: "social_email", Type: field.TypeString, Default: ""},
+		{Name: "social_name", Type: field.TypeString, Default: ""},
+		{Name: "social_type", Type: field.TypeString, Default: ""},
+		{Name: "social_payload", Type: field.TypeString, Default: ""},
+		{Name: "hero_repeat", Type: field.TypeUint},
 		{Name: "created_at", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},
 	}
@@ -30,9 +31,9 @@ var (
 	// UserActiveRecordsColumns holds the columns for the "user_active_records" table.
 	UserActiveRecordsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "user_id", Type: field.TypeString, Nullable: true},
+		{Name: "user_id", Type: field.TypeString},
 		{Name: "active_type", Type: field.TypeString},
-		{Name: "score", Type: field.TypeInt, Nullable: true},
+		{Name: "score", Type: field.TypeInt},
 		{Name: "is_finished", Type: field.TypeUint},
 		{Name: "started_at", Type: field.TypeTime, Nullable: true},
 		{Name: "ended_at", Type: field.TypeTime, Nullable: true},

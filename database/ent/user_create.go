@@ -103,6 +103,20 @@ func (uc *UserCreate) SetNillableSocialPayload(s *string) *UserCreate {
 	return uc
 }
 
+// SetHeroRepeat sets the hero_repeat field.
+func (uc *UserCreate) SetHeroRepeat(u uint) *UserCreate {
+	uc.mutation.SetHeroRepeat(u)
+	return uc
+}
+
+// SetNillableHeroRepeat sets the hero_repeat field if the given value is not nil.
+func (uc *UserCreate) SetNillableHeroRepeat(u *uint) *UserCreate {
+	if u != nil {
+		uc.SetHeroRepeat(*u)
+	}
+	return uc
+}
+
 // SetCreatedAt sets the created_at field.
 func (uc *UserCreate) SetCreatedAt(t time.Time) *UserCreate {
 	uc.mutation.SetCreatedAt(t)
@@ -163,6 +177,10 @@ func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
 		v := user.DefaultSocialPayload
 		uc.mutation.SetSocialPayload(v)
 	}
+	if _, ok := uc.mutation.HeroRepeat(); !ok {
+		v := user.DefaultHeroRepeat
+		uc.mutation.SetHeroRepeat(v)
+	}
 	var (
 		err  error
 		node *User
@@ -220,7 +238,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldSocialUserID,
 		})
-		u.SocialUserID = &value
+		u.SocialUserID = value
 	}
 	if value, ok := uc.mutation.SocialAvatarURL(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -228,7 +246,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldSocialAvatarURL,
 		})
-		u.SocialAvatarURL = &value
+		u.SocialAvatarURL = value
 	}
 	if value, ok := uc.mutation.SocialEmail(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -236,7 +254,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldSocialEmail,
 		})
-		u.SocialEmail = &value
+		u.SocialEmail = value
 	}
 	if value, ok := uc.mutation.SocialName(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -244,7 +262,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldSocialName,
 		})
-		u.SocialName = &value
+		u.SocialName = value
 	}
 	if value, ok := uc.mutation.SocialType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -252,7 +270,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldSocialType,
 		})
-		u.SocialType = &value
+		u.SocialType = value
 	}
 	if value, ok := uc.mutation.SocialPayload(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -260,7 +278,15 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldSocialPayload,
 		})
-		u.SocialPayload = &value
+		u.SocialPayload = value
+	}
+	if value, ok := uc.mutation.HeroRepeat(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroRepeat,
+		})
+		u.HeroRepeat = value
 	}
 	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -268,7 +294,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldCreatedAt,
 		})
-		u.CreatedAt = &value
+		u.CreatedAt = value
 	}
 	if value, ok := uc.mutation.UpdatedAt(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -276,7 +302,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Value:  value,
 			Column: user.FieldUpdatedAt,
 		})
-		u.UpdatedAt = &value
+		u.UpdatedAt = value
 	}
 	if err := sqlgraph.CreateNode(ctx, uc.driver, _spec); err != nil {
 		if cerr, ok := isSQLConstraintError(err); ok {

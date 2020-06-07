@@ -134,6 +134,13 @@ func SocialPayload(v string) predicate.User {
 	})
 }
 
+// HeroRepeat applies equality check predicate on the "hero_repeat" field. It's identical to HeroRepeatEQ.
+func HeroRepeat(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHeroRepeat), v))
+	})
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -242,20 +249,6 @@ func SocialUserIDHasPrefix(v string) predicate.User {
 func SocialUserIDHasSuffix(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldSocialUserID), v))
-	})
-}
-
-// SocialUserIDIsNil applies the IsNil predicate on the "social_user_id" field.
-func SocialUserIDIsNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSocialUserID)))
-	})
-}
-
-// SocialUserIDNotNil applies the NotNil predicate on the "social_user_id" field.
-func SocialUserIDNotNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSocialUserID)))
 	})
 }
 
@@ -370,20 +363,6 @@ func SocialAvatarURLHasSuffix(v string) predicate.User {
 	})
 }
 
-// SocialAvatarURLIsNil applies the IsNil predicate on the "social_avatar_url" field.
-func SocialAvatarURLIsNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSocialAvatarURL)))
-	})
-}
-
-// SocialAvatarURLNotNil applies the NotNil predicate on the "social_avatar_url" field.
-func SocialAvatarURLNotNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSocialAvatarURL)))
-	})
-}
-
 // SocialAvatarURLEqualFold applies the EqualFold predicate on the "social_avatar_url" field.
 func SocialAvatarURLEqualFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -492,20 +471,6 @@ func SocialEmailHasPrefix(v string) predicate.User {
 func SocialEmailHasSuffix(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldSocialEmail), v))
-	})
-}
-
-// SocialEmailIsNil applies the IsNil predicate on the "social_email" field.
-func SocialEmailIsNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSocialEmail)))
-	})
-}
-
-// SocialEmailNotNil applies the NotNil predicate on the "social_email" field.
-func SocialEmailNotNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSocialEmail)))
 	})
 }
 
@@ -620,20 +585,6 @@ func SocialNameHasSuffix(v string) predicate.User {
 	})
 }
 
-// SocialNameIsNil applies the IsNil predicate on the "social_name" field.
-func SocialNameIsNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSocialName)))
-	})
-}
-
-// SocialNameNotNil applies the NotNil predicate on the "social_name" field.
-func SocialNameNotNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSocialName)))
-	})
-}
-
 // SocialNameEqualFold applies the EqualFold predicate on the "social_name" field.
 func SocialNameEqualFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -742,20 +693,6 @@ func SocialTypeHasPrefix(v string) predicate.User {
 func SocialTypeHasSuffix(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldSocialType), v))
-	})
-}
-
-// SocialTypeIsNil applies the IsNil predicate on the "social_type" field.
-func SocialTypeIsNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSocialType)))
-	})
-}
-
-// SocialTypeNotNil applies the NotNil predicate on the "social_type" field.
-func SocialTypeNotNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSocialType)))
 	})
 }
 
@@ -870,20 +807,6 @@ func SocialPayloadHasSuffix(v string) predicate.User {
 	})
 }
 
-// SocialPayloadIsNil applies the IsNil predicate on the "social_payload" field.
-func SocialPayloadIsNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldSocialPayload)))
-	})
-}
-
-// SocialPayloadNotNil applies the NotNil predicate on the "social_payload" field.
-func SocialPayloadNotNil() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldSocialPayload)))
-	})
-}
-
 // SocialPayloadEqualFold applies the EqualFold predicate on the "social_payload" field.
 func SocialPayloadEqualFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -895,6 +818,82 @@ func SocialPayloadEqualFold(v string) predicate.User {
 func SocialPayloadContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldSocialPayload), v))
+	})
+}
+
+// HeroRepeatEQ applies the EQ predicate on the "hero_repeat" field.
+func HeroRepeatEQ(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHeroRepeat), v))
+	})
+}
+
+// HeroRepeatNEQ applies the NEQ predicate on the "hero_repeat" field.
+func HeroRepeatNEQ(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldHeroRepeat), v))
+	})
+}
+
+// HeroRepeatIn applies the In predicate on the "hero_repeat" field.
+func HeroRepeatIn(vs ...uint) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldHeroRepeat), v...))
+	})
+}
+
+// HeroRepeatNotIn applies the NotIn predicate on the "hero_repeat" field.
+func HeroRepeatNotIn(vs ...uint) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldHeroRepeat), v...))
+	})
+}
+
+// HeroRepeatGT applies the GT predicate on the "hero_repeat" field.
+func HeroRepeatGT(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldHeroRepeat), v))
+	})
+}
+
+// HeroRepeatGTE applies the GTE predicate on the "hero_repeat" field.
+func HeroRepeatGTE(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldHeroRepeat), v))
+	})
+}
+
+// HeroRepeatLT applies the LT predicate on the "hero_repeat" field.
+func HeroRepeatLT(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldHeroRepeat), v))
+	})
+}
+
+// HeroRepeatLTE applies the LTE predicate on the "hero_repeat" field.
+func HeroRepeatLTE(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldHeroRepeat), v))
 	})
 }
 

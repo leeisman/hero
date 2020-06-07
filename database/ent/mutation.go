@@ -39,6 +39,8 @@ type UserMutation struct {
 	social_name       *string
 	social_type       *string
 	social_payload    *string
+	hero_repeat       *uint
+	addhero_repeat    *uint
 	created_at        *time.Time
 	updated_at        *time.Time
 	clearedFields     map[string]struct{}
@@ -149,7 +151,7 @@ func (m *UserMutation) SocialUserID() (r string, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldSocialUserID(ctx context.Context) (v *string, err error) {
+func (m *UserMutation) OldSocialUserID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldSocialUserID is allowed only on UpdateOne operations")
 	}
@@ -163,22 +165,9 @@ func (m *UserMutation) OldSocialUserID(ctx context.Context) (v *string, err erro
 	return oldValue.SocialUserID, nil
 }
 
-// ClearSocialUserID clears the value of social_user_id.
-func (m *UserMutation) ClearSocialUserID() {
-	m.social_user_id = nil
-	m.clearedFields[user.FieldSocialUserID] = struct{}{}
-}
-
-// SocialUserIDCleared returns if the field social_user_id was cleared in this mutation.
-func (m *UserMutation) SocialUserIDCleared() bool {
-	_, ok := m.clearedFields[user.FieldSocialUserID]
-	return ok
-}
-
 // ResetSocialUserID reset all changes of the "social_user_id" field.
 func (m *UserMutation) ResetSocialUserID() {
 	m.social_user_id = nil
-	delete(m.clearedFields, user.FieldSocialUserID)
 }
 
 // SetSocialAvatarURL sets the social_avatar_url field.
@@ -199,7 +188,7 @@ func (m *UserMutation) SocialAvatarURL() (r string, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldSocialAvatarURL(ctx context.Context) (v *string, err error) {
+func (m *UserMutation) OldSocialAvatarURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldSocialAvatarURL is allowed only on UpdateOne operations")
 	}
@@ -213,22 +202,9 @@ func (m *UserMutation) OldSocialAvatarURL(ctx context.Context) (v *string, err e
 	return oldValue.SocialAvatarURL, nil
 }
 
-// ClearSocialAvatarURL clears the value of social_avatar_url.
-func (m *UserMutation) ClearSocialAvatarURL() {
-	m.social_avatar_url = nil
-	m.clearedFields[user.FieldSocialAvatarURL] = struct{}{}
-}
-
-// SocialAvatarURLCleared returns if the field social_avatar_url was cleared in this mutation.
-func (m *UserMutation) SocialAvatarURLCleared() bool {
-	_, ok := m.clearedFields[user.FieldSocialAvatarURL]
-	return ok
-}
-
 // ResetSocialAvatarURL reset all changes of the "social_avatar_url" field.
 func (m *UserMutation) ResetSocialAvatarURL() {
 	m.social_avatar_url = nil
-	delete(m.clearedFields, user.FieldSocialAvatarURL)
 }
 
 // SetSocialEmail sets the social_email field.
@@ -249,7 +225,7 @@ func (m *UserMutation) SocialEmail() (r string, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldSocialEmail(ctx context.Context) (v *string, err error) {
+func (m *UserMutation) OldSocialEmail(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldSocialEmail is allowed only on UpdateOne operations")
 	}
@@ -263,22 +239,9 @@ func (m *UserMutation) OldSocialEmail(ctx context.Context) (v *string, err error
 	return oldValue.SocialEmail, nil
 }
 
-// ClearSocialEmail clears the value of social_email.
-func (m *UserMutation) ClearSocialEmail() {
-	m.social_email = nil
-	m.clearedFields[user.FieldSocialEmail] = struct{}{}
-}
-
-// SocialEmailCleared returns if the field social_email was cleared in this mutation.
-func (m *UserMutation) SocialEmailCleared() bool {
-	_, ok := m.clearedFields[user.FieldSocialEmail]
-	return ok
-}
-
 // ResetSocialEmail reset all changes of the "social_email" field.
 func (m *UserMutation) ResetSocialEmail() {
 	m.social_email = nil
-	delete(m.clearedFields, user.FieldSocialEmail)
 }
 
 // SetSocialName sets the social_name field.
@@ -299,7 +262,7 @@ func (m *UserMutation) SocialName() (r string, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldSocialName(ctx context.Context) (v *string, err error) {
+func (m *UserMutation) OldSocialName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldSocialName is allowed only on UpdateOne operations")
 	}
@@ -313,22 +276,9 @@ func (m *UserMutation) OldSocialName(ctx context.Context) (v *string, err error)
 	return oldValue.SocialName, nil
 }
 
-// ClearSocialName clears the value of social_name.
-func (m *UserMutation) ClearSocialName() {
-	m.social_name = nil
-	m.clearedFields[user.FieldSocialName] = struct{}{}
-}
-
-// SocialNameCleared returns if the field social_name was cleared in this mutation.
-func (m *UserMutation) SocialNameCleared() bool {
-	_, ok := m.clearedFields[user.FieldSocialName]
-	return ok
-}
-
 // ResetSocialName reset all changes of the "social_name" field.
 func (m *UserMutation) ResetSocialName() {
 	m.social_name = nil
-	delete(m.clearedFields, user.FieldSocialName)
 }
 
 // SetSocialType sets the social_type field.
@@ -349,7 +299,7 @@ func (m *UserMutation) SocialType() (r string, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldSocialType(ctx context.Context) (v *string, err error) {
+func (m *UserMutation) OldSocialType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldSocialType is allowed only on UpdateOne operations")
 	}
@@ -363,22 +313,9 @@ func (m *UserMutation) OldSocialType(ctx context.Context) (v *string, err error)
 	return oldValue.SocialType, nil
 }
 
-// ClearSocialType clears the value of social_type.
-func (m *UserMutation) ClearSocialType() {
-	m.social_type = nil
-	m.clearedFields[user.FieldSocialType] = struct{}{}
-}
-
-// SocialTypeCleared returns if the field social_type was cleared in this mutation.
-func (m *UserMutation) SocialTypeCleared() bool {
-	_, ok := m.clearedFields[user.FieldSocialType]
-	return ok
-}
-
 // ResetSocialType reset all changes of the "social_type" field.
 func (m *UserMutation) ResetSocialType() {
 	m.social_type = nil
-	delete(m.clearedFields, user.FieldSocialType)
 }
 
 // SetSocialPayload sets the social_payload field.
@@ -399,7 +336,7 @@ func (m *UserMutation) SocialPayload() (r string, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldSocialPayload(ctx context.Context) (v *string, err error) {
+func (m *UserMutation) OldSocialPayload(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldSocialPayload is allowed only on UpdateOne operations")
 	}
@@ -413,22 +350,66 @@ func (m *UserMutation) OldSocialPayload(ctx context.Context) (v *string, err err
 	return oldValue.SocialPayload, nil
 }
 
-// ClearSocialPayload clears the value of social_payload.
-func (m *UserMutation) ClearSocialPayload() {
-	m.social_payload = nil
-	m.clearedFields[user.FieldSocialPayload] = struct{}{}
-}
-
-// SocialPayloadCleared returns if the field social_payload was cleared in this mutation.
-func (m *UserMutation) SocialPayloadCleared() bool {
-	_, ok := m.clearedFields[user.FieldSocialPayload]
-	return ok
-}
-
 // ResetSocialPayload reset all changes of the "social_payload" field.
 func (m *UserMutation) ResetSocialPayload() {
 	m.social_payload = nil
-	delete(m.clearedFields, user.FieldSocialPayload)
+}
+
+// SetHeroRepeat sets the hero_repeat field.
+func (m *UserMutation) SetHeroRepeat(u uint) {
+	m.hero_repeat = &u
+	m.addhero_repeat = nil
+}
+
+// HeroRepeat returns the hero_repeat value in the mutation.
+func (m *UserMutation) HeroRepeat() (r uint, exists bool) {
+	v := m.hero_repeat
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHeroRepeat returns the old hero_repeat value of the User.
+// If the User object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *UserMutation) OldHeroRepeat(ctx context.Context) (v uint, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldHeroRepeat is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldHeroRepeat requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHeroRepeat: %w", err)
+	}
+	return oldValue.HeroRepeat, nil
+}
+
+// AddHeroRepeat adds u to hero_repeat.
+func (m *UserMutation) AddHeroRepeat(u uint) {
+	if m.addhero_repeat != nil {
+		*m.addhero_repeat += u
+	} else {
+		m.addhero_repeat = &u
+	}
+}
+
+// AddedHeroRepeat returns the value that was added to the hero_repeat field in this mutation.
+func (m *UserMutation) AddedHeroRepeat() (r uint, exists bool) {
+	v := m.addhero_repeat
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetHeroRepeat reset all changes of the "hero_repeat" field.
+func (m *UserMutation) ResetHeroRepeat() {
+	m.hero_repeat = nil
+	m.addhero_repeat = nil
 }
 
 // SetCreatedAt sets the created_at field.
@@ -449,7 +430,7 @@ func (m *UserMutation) CreatedAt() (r time.Time, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldCreatedAt(ctx context.Context) (v *time.Time, err error) {
+func (m *UserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldCreatedAt is allowed only on UpdateOne operations")
 	}
@@ -499,7 +480,7 @@ func (m *UserMutation) UpdatedAt() (r time.Time, exists bool) {
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldUpdatedAt(ctx context.Context) (v *time.Time, err error) {
+func (m *UserMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldUpdatedAt is allowed only on UpdateOne operations")
 	}
@@ -545,7 +526,7 @@ func (m *UserMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.social_user_id != nil {
 		fields = append(fields, user.FieldSocialUserID)
 	}
@@ -563,6 +544,9 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.social_payload != nil {
 		fields = append(fields, user.FieldSocialPayload)
+	}
+	if m.hero_repeat != nil {
+		fields = append(fields, user.FieldHeroRepeat)
 	}
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
@@ -590,6 +574,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.SocialType()
 	case user.FieldSocialPayload:
 		return m.SocialPayload()
+	case user.FieldHeroRepeat:
+		return m.HeroRepeat()
 	case user.FieldCreatedAt:
 		return m.CreatedAt()
 	case user.FieldUpdatedAt:
@@ -615,6 +601,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSocialType(ctx)
 	case user.FieldSocialPayload:
 		return m.OldSocialPayload(ctx)
+	case user.FieldHeroRepeat:
+		return m.OldHeroRepeat(ctx)
 	case user.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case user.FieldUpdatedAt:
@@ -670,6 +658,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSocialPayload(v)
 		return nil
+	case user.FieldHeroRepeat:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHeroRepeat(v)
+		return nil
 	case user.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -691,13 +686,21 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented
 // or decremented during this mutation.
 func (m *UserMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addhero_repeat != nil {
+		fields = append(fields, user.FieldHeroRepeat)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was in/decremented
 // from a field with the given name. The second value indicates
 // that this field was not set, or was not define in the schema.
 func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case user.FieldHeroRepeat:
+		return m.AddedHeroRepeat()
+	}
 	return nil, false
 }
 
@@ -706,6 +709,13 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case user.FieldHeroRepeat:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHeroRepeat(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User numeric field %s", name)
 }
@@ -714,24 +724,6 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // during this mutation.
 func (m *UserMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(user.FieldSocialUserID) {
-		fields = append(fields, user.FieldSocialUserID)
-	}
-	if m.FieldCleared(user.FieldSocialAvatarURL) {
-		fields = append(fields, user.FieldSocialAvatarURL)
-	}
-	if m.FieldCleared(user.FieldSocialEmail) {
-		fields = append(fields, user.FieldSocialEmail)
-	}
-	if m.FieldCleared(user.FieldSocialName) {
-		fields = append(fields, user.FieldSocialName)
-	}
-	if m.FieldCleared(user.FieldSocialType) {
-		fields = append(fields, user.FieldSocialType)
-	}
-	if m.FieldCleared(user.FieldSocialPayload) {
-		fields = append(fields, user.FieldSocialPayload)
-	}
 	if m.FieldCleared(user.FieldCreatedAt) {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -752,24 +744,6 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
 	switch name {
-	case user.FieldSocialUserID:
-		m.ClearSocialUserID()
-		return nil
-	case user.FieldSocialAvatarURL:
-		m.ClearSocialAvatarURL()
-		return nil
-	case user.FieldSocialEmail:
-		m.ClearSocialEmail()
-		return nil
-	case user.FieldSocialName:
-		m.ClearSocialName()
-		return nil
-	case user.FieldSocialType:
-		m.ClearSocialType()
-		return nil
-	case user.FieldSocialPayload:
-		m.ClearSocialPayload()
-		return nil
 	case user.FieldCreatedAt:
 		m.ClearCreatedAt()
 		return nil
@@ -802,6 +776,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldSocialPayload:
 		m.ResetSocialPayload()
+		return nil
+	case user.FieldHeroRepeat:
+		m.ResetHeroRepeat()
 		return nil
 	case user.FieldCreatedAt:
 		m.ResetCreatedAt()
@@ -990,7 +967,7 @@ func (m *UserActiveRecordMutation) UserID() (r string, exists bool) {
 // If the UserActiveRecord object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserActiveRecordMutation) OldUserID(ctx context.Context) (v *string, err error) {
+func (m *UserActiveRecordMutation) OldUserID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldUserID is allowed only on UpdateOne operations")
 	}
@@ -1004,22 +981,9 @@ func (m *UserActiveRecordMutation) OldUserID(ctx context.Context) (v *string, er
 	return oldValue.UserID, nil
 }
 
-// ClearUserID clears the value of user_id.
-func (m *UserActiveRecordMutation) ClearUserID() {
-	m.user_id = nil
-	m.clearedFields[useractiverecord.FieldUserID] = struct{}{}
-}
-
-// UserIDCleared returns if the field user_id was cleared in this mutation.
-func (m *UserActiveRecordMutation) UserIDCleared() bool {
-	_, ok := m.clearedFields[useractiverecord.FieldUserID]
-	return ok
-}
-
 // ResetUserID reset all changes of the "user_id" field.
 func (m *UserActiveRecordMutation) ResetUserID() {
 	m.user_id = nil
-	delete(m.clearedFields, useractiverecord.FieldUserID)
 }
 
 // SetActiveType sets the active_type field.
@@ -1110,24 +1074,10 @@ func (m *UserActiveRecordMutation) AddedScore() (r int, exists bool) {
 	return *v, true
 }
 
-// ClearScore clears the value of score.
-func (m *UserActiveRecordMutation) ClearScore() {
-	m.score = nil
-	m.addscore = nil
-	m.clearedFields[useractiverecord.FieldScore] = struct{}{}
-}
-
-// ScoreCleared returns if the field score was cleared in this mutation.
-func (m *UserActiveRecordMutation) ScoreCleared() bool {
-	_, ok := m.clearedFields[useractiverecord.FieldScore]
-	return ok
-}
-
 // ResetScore reset all changes of the "score" field.
 func (m *UserActiveRecordMutation) ResetScore() {
 	m.score = nil
 	m.addscore = nil
-	delete(m.clearedFields, useractiverecord.FieldScore)
 }
 
 // SetIsFinished sets the is_finished field.
@@ -1597,12 +1547,6 @@ func (m *UserActiveRecordMutation) AddField(name string, value ent.Value) error 
 // during this mutation.
 func (m *UserActiveRecordMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(useractiverecord.FieldUserID) {
-		fields = append(fields, useractiverecord.FieldUserID)
-	}
-	if m.FieldCleared(useractiverecord.FieldScore) {
-		fields = append(fields, useractiverecord.FieldScore)
-	}
 	if m.FieldCleared(useractiverecord.FieldStartedAt) {
 		fields = append(fields, useractiverecord.FieldStartedAt)
 	}
@@ -1629,12 +1573,6 @@ func (m *UserActiveRecordMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UserActiveRecordMutation) ClearField(name string) error {
 	switch name {
-	case useractiverecord.FieldUserID:
-		m.ClearUserID()
-		return nil
-	case useractiverecord.FieldScore:
-		m.ClearScore()
-		return nil
 	case useractiverecord.FieldStartedAt:
 		m.ClearStartedAt()
 		return nil

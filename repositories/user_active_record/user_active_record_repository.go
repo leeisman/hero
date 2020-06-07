@@ -12,7 +12,7 @@ func Create(ctx context.Context, userActiveRecord *ent.UserActiveRecord) (*ent.U
 	userActiveRecordID := "UAR_" + userActiveRecordXid.String()
 	return mysql.Client().UserActiveRecord.Create().
 		SetID(userActiveRecordID).
-		SetNillableUserID(userActiveRecord.UserID).
+		SetUserID(userActiveRecord.UserID).
 		SetActiveType(userActiveRecord.ActiveType).
 		SetNillableStartedAt(userActiveRecord.StartedAt).
 		SetNillableEndedAt(userActiveRecord.EndedAt).

@@ -245,20 +245,6 @@ func UserIDHasSuffix(v string) predicate.UserActiveRecord {
 	})
 }
 
-// UserIDIsNil applies the IsNil predicate on the "user_id" field.
-func UserIDIsNil() predicate.UserActiveRecord {
-	return predicate.UserActiveRecord(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldUserID)))
-	})
-}
-
-// UserIDNotNil applies the NotNil predicate on the "user_id" field.
-func UserIDNotNil() predicate.UserActiveRecord {
-	return predicate.UserActiveRecord(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldUserID)))
-	})
-}
-
 // UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
 func UserIDEqualFold(v string) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
@@ -457,20 +443,6 @@ func ScoreLT(v int) predicate.UserActiveRecord {
 func ScoreLTE(v int) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldScore), v))
-	})
-}
-
-// ScoreIsNil applies the IsNil predicate on the "score" field.
-func ScoreIsNil() predicate.UserActiveRecord {
-	return predicate.UserActiveRecord(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldScore)))
-	})
-}
-
-// ScoreNotNil applies the NotNil predicate on the "score" field.
-func ScoreNotNil() predicate.UserActiveRecord {
-	return predicate.UserActiveRecord(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldScore)))
 	})
 }
 

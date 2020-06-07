@@ -17,21 +17,23 @@ type User struct {
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
 	// SocialUserID holds the value of the "social_user_id" field.
-	SocialUserID *string `json:"social_user_id,omitempty"`
+	SocialUserID string `json:"social_user_id,omitempty"`
 	// SocialAvatarURL holds the value of the "social_avatar_url" field.
-	SocialAvatarURL *string `json:"social_avatar_url,omitempty"`
+	SocialAvatarURL string `json:"social_avatar_url,omitempty"`
 	// SocialEmail holds the value of the "social_email" field.
-	SocialEmail *string `json:"social_email,omitempty"`
+	SocialEmail string `json:"social_email,omitempty"`
 	// SocialName holds the value of the "social_name" field.
-	SocialName *string `json:"social_name,omitempty"`
+	SocialName string `json:"social_name,omitempty"`
 	// SocialType holds the value of the "social_type" field.
-	SocialType *string `json:"social_type,omitempty"`
+	SocialType string `json:"social_type,omitempty"`
 	// SocialPayload holds the value of the "social_payload" field.
-	SocialPayload *string `json:"social_payload,omitempty"`
+	SocialPayload string `json:"social_payload,omitempty"`
+	// HeroRepeat holds the value of the "hero_repeat" field.
+	HeroRepeat uint `json:"hero_repeat,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt *time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -44,6 +46,7 @@ func (*User) scanValues() []interface{} {
 		&sql.NullString{}, // social_name
 		&sql.NullString{}, // social_type
 		&sql.NullString{}, // social_payload
+		&sql.NullInt64{},  // hero_repeat
 		&sql.NullTime{},   // created_at
 		&sql.NullTime{},   // updated_at
 	}
@@ -64,50 +67,47 @@ func (u *User) assignValues(values ...interface{}) error {
 	if value, ok := values[0].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field social_user_id", values[0])
 	} else if value.Valid {
-		u.SocialUserID = new(string)
-		*u.SocialUserID = value.String
+		u.SocialUserID = value.String
 	}
 	if value, ok := values[1].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field social_avatar_url", values[1])
 	} else if value.Valid {
-		u.SocialAvatarURL = new(string)
-		*u.SocialAvatarURL = value.String
+		u.SocialAvatarURL = value.String
 	}
 	if value, ok := values[2].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field social_email", values[2])
 	} else if value.Valid {
-		u.SocialEmail = new(string)
-		*u.SocialEmail = value.String
+		u.SocialEmail = value.String
 	}
 	if value, ok := values[3].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field social_name", values[3])
 	} else if value.Valid {
-		u.SocialName = new(string)
-		*u.SocialName = value.String
+		u.SocialName = value.String
 	}
 	if value, ok := values[4].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field social_type", values[4])
 	} else if value.Valid {
-		u.SocialType = new(string)
-		*u.SocialType = value.String
+		u.SocialType = value.String
 	}
 	if value, ok := values[5].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field social_payload", values[5])
 	} else if value.Valid {
-		u.SocialPayload = new(string)
-		*u.SocialPayload = value.String
+		u.SocialPayload = value.String
 	}
-	if value, ok := values[6].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field created_at", values[6])
+	if value, ok := values[6].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hero_repeat", values[6])
 	} else if value.Valid {
-		u.CreatedAt = new(time.Time)
-		*u.CreatedAt = value.Time
+		u.HeroRepeat = uint(value.Int64)
 	}
 	if value, ok := values[7].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field updated_at", values[7])
+		return fmt.Errorf("unexpected type %T for field created_at", values[7])
 	} else if value.Valid {
-		u.UpdatedAt = new(time.Time)
-		*u.UpdatedAt = value.Time
+		u.CreatedAt = value.Time
+	}
+	if value, ok := values[8].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field updated_at", values[8])
+	} else if value.Valid {
+		u.UpdatedAt = value.Time
 	}
 	return nil
 }
@@ -135,38 +135,24 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
-	if v := u.SocialUserID; v != nil {
-		builder.WriteString(", social_user_id=")
-		builder.WriteString(*v)
-	}
-	if v := u.SocialAvatarURL; v != nil {
-		builder.WriteString(", social_avatar_url=")
-		builder.WriteString(*v)
-	}
-	if v := u.SocialEmail; v != nil {
-		builder.WriteString(", social_email=")
-		builder.WriteString(*v)
-	}
-	if v := u.SocialName; v != nil {
-		builder.WriteString(", social_name=")
-		builder.WriteString(*v)
-	}
-	if v := u.SocialType; v != nil {
-		builder.WriteString(", social_type=")
-		builder.WriteString(*v)
-	}
-	if v := u.SocialPayload; v != nil {
-		builder.WriteString(", social_payload=")
-		builder.WriteString(*v)
-	}
-	if v := u.CreatedAt; v != nil {
-		builder.WriteString(", created_at=")
-		builder.WriteString(v.Format(time.ANSIC))
-	}
-	if v := u.UpdatedAt; v != nil {
-		builder.WriteString(", updated_at=")
-		builder.WriteString(v.Format(time.ANSIC))
-	}
+	builder.WriteString(", social_user_id=")
+	builder.WriteString(u.SocialUserID)
+	builder.WriteString(", social_avatar_url=")
+	builder.WriteString(u.SocialAvatarURL)
+	builder.WriteString(", social_email=")
+	builder.WriteString(u.SocialEmail)
+	builder.WriteString(", social_name=")
+	builder.WriteString(u.SocialName)
+	builder.WriteString(", social_type=")
+	builder.WriteString(u.SocialType)
+	builder.WriteString(", social_payload=")
+	builder.WriteString(u.SocialPayload)
+	builder.WriteString(", hero_repeat=")
+	builder.WriteString(fmt.Sprintf("%v", u.HeroRepeat))
+	builder.WriteString(", created_at=")
+	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", updated_at=")
+	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

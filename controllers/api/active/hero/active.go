@@ -23,6 +23,7 @@ type PlayRequest struct {
 }
 
 type RecordRequest struct {
+	FbUserID string `json:"fb_user_id" form:"fb_user_id" query:"fb_user_id"`
 	RecordID string `json:"record_id"`
 	Score    int    `json:"score"`
 }
@@ -48,12 +49,13 @@ func Play(c echo.Context) error {
 		id := "UR_" + newXID.String()
 		user, err = userRepository.Create(ctx, &ent.User{
 			ID:              id,
-			SocialUserID:    &request.FbUserID,
-			SocialAvatarURL: &request.FBAvatarUrl,
-			SocialEmail:     &request.FbEmail,
-			SocialName:      &request.FbName,
-			CreatedAt:       &now,
-			UpdatedAt:       &now,
+			SocialUserID:    request.FbUserID,
+			SocialAvatarURL: request.FBAvatarUrl,
+			SocialType:      enums.SocialTypeFacebook,
+			SocialEmail:     request.FbEmail,
+			SocialName:      request.FbName,
+			CreatedAt:       now,
+			UpdatedAt:       now,
 		})
 		if err != nil {
 			return controllers.ResponseFail(err, c)
@@ -63,9 +65,8 @@ func Play(c echo.Context) error {
 	if user == nil {
 		return controllers.ResponseFail(fmt.Errorf("Create user fail: %s", request.FbUserID), c)
 	}
-
 	userActiveRecord, err := userActiveRecordRepository.Create(ctx, &ent.UserActiveRecord{
-		UserID:     &user.ID,
+		UserID:     user.ID,
 		ActiveType: enums.ActiveTypeHeroGame,
 		StartedAt:  &now,
 		CreatedAt:  &now,
@@ -94,6 +95,17 @@ func Record(c echo.Context) error {
 	if userActiveRecord.EndedAt != nil {
 		return controllers.ResponseFail(fmt.Errorf("already finished"), c)
 	}
+	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
+	if user == nil {
+		return controllers.ResponseFail(fmt.Errorf("User no found: %s", request.FbUserID), c)
+	}
+	if userActiveRecord.UserID != user.ID {
+		return controllers.ResponseFail(fmt.Errorf("Record no match user: %s", request.FbUserID), c)
+	}
+	_, err = user.Update().SetHeroRepeat(1).Save(ctx)
+	if err != nil {
+		return controllers.ResponseFail(fmt.Errorf("Change user repeat type err: %s", request.FbUserID), c)
+	}
 	now := time.Now().UTC()
 	userActiveRecord, err = userActiveRecord.Update().
 		SetScore(request.Score).
@@ -104,9 +116,7 @@ func Record(c echo.Context) error {
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-
-	result := redis.Client().Incr(ctx, enums.RedisFinishedGameCount)
-	logger.Print(enums.RedisFinishedGameCount, result)
+	countFinishUserTotal(ctx)
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
@@ -127,7 +137,7 @@ func Tracking(c echo.Context) error {
 	}
 
 	userActiveRecord, err := userActiveRecordRepository.Create(ctx, &ent.UserActiveRecord{
-		UserID:     &user.ID,
+		UserID:     user.ID,
 		ActiveType: request.Type,
 		StartedAt:  &now,
 		EndedAt:    &now,
@@ -138,4 +148,21 @@ func Tracking(c echo.Context) error {
 		return controllers.ResponseFail(err, c)
 	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
+}
+
+func countFinishUserTotal(ctx context.Context) {
+	result := redis.Client().Incr(ctx, enums.RedisFinishedGameCount)
+	logger.Print(enums.RedisFinishedGameCount, result)
+}
+
+func countRepeatUserTotal() {
+
+}
+
+func countNotRepeatUserTotal() {
+
+}
+
+func countExitUserTotal() {
+
 }

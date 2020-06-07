@@ -20,9 +20,10 @@ func FindBySocialUserID(ctx context.Context, socialUserID string) (*ent.User, er
 func Create(ctx context.Context, user *ent.User) (*ent.User, error) {
 	return mysql.Client().User.Create().
 		SetID(user.ID).
-		SetSocialUserID(*user.SocialUserID).
-		SetSocialAvatarURL(*user.SocialAvatarURL).
-		SetSocialEmail(*user.SocialEmail).
-		SetSocialName(*user.SocialName).
+		SetSocialType(user.SocialType).
+		SetSocialUserID(user.SocialUserID).
+		SetSocialAvatarURL(user.SocialAvatarURL).
+		SetSocialEmail(user.SocialEmail).
+		SetSocialName(user.SocialName).
 		Save(ctx)
 }

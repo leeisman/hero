@@ -14,9 +14,9 @@ type UserActiveRecord struct {
 func (UserActiveRecord) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id"),
-		field.String("user_id").Nillable().Optional(),
+		field.String("user_id"),
 		field.String("active_type"),
-		field.Int("score").Default(0).Optional(),
+		field.Int("score").Default(0),
 		field.Uint("is_finished").Comment("0:未完成, 1:完成").Default(0),
 		field.Time("started_at").Nillable().Optional(),
 		field.Time("ended_at").Nillable().Optional(),

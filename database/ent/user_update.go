@@ -42,12 +42,6 @@ func (uu *UserUpdate) SetNillableSocialUserID(s *string) *UserUpdate {
 	return uu
 }
 
-// ClearSocialUserID clears the value of social_user_id.
-func (uu *UserUpdate) ClearSocialUserID() *UserUpdate {
-	uu.mutation.ClearSocialUserID()
-	return uu
-}
-
 // SetSocialAvatarURL sets the social_avatar_url field.
 func (uu *UserUpdate) SetSocialAvatarURL(s string) *UserUpdate {
 	uu.mutation.SetSocialAvatarURL(s)
@@ -59,12 +53,6 @@ func (uu *UserUpdate) SetNillableSocialAvatarURL(s *string) *UserUpdate {
 	if s != nil {
 		uu.SetSocialAvatarURL(*s)
 	}
-	return uu
-}
-
-// ClearSocialAvatarURL clears the value of social_avatar_url.
-func (uu *UserUpdate) ClearSocialAvatarURL() *UserUpdate {
-	uu.mutation.ClearSocialAvatarURL()
 	return uu
 }
 
@@ -82,12 +70,6 @@ func (uu *UserUpdate) SetNillableSocialEmail(s *string) *UserUpdate {
 	return uu
 }
 
-// ClearSocialEmail clears the value of social_email.
-func (uu *UserUpdate) ClearSocialEmail() *UserUpdate {
-	uu.mutation.ClearSocialEmail()
-	return uu
-}
-
 // SetSocialName sets the social_name field.
 func (uu *UserUpdate) SetSocialName(s string) *UserUpdate {
 	uu.mutation.SetSocialName(s)
@@ -99,12 +81,6 @@ func (uu *UserUpdate) SetNillableSocialName(s *string) *UserUpdate {
 	if s != nil {
 		uu.SetSocialName(*s)
 	}
-	return uu
-}
-
-// ClearSocialName clears the value of social_name.
-func (uu *UserUpdate) ClearSocialName() *UserUpdate {
-	uu.mutation.ClearSocialName()
 	return uu
 }
 
@@ -122,12 +98,6 @@ func (uu *UserUpdate) SetNillableSocialType(s *string) *UserUpdate {
 	return uu
 }
 
-// ClearSocialType clears the value of social_type.
-func (uu *UserUpdate) ClearSocialType() *UserUpdate {
-	uu.mutation.ClearSocialType()
-	return uu
-}
-
 // SetSocialPayload sets the social_payload field.
 func (uu *UserUpdate) SetSocialPayload(s string) *UserUpdate {
 	uu.mutation.SetSocialPayload(s)
@@ -142,9 +112,24 @@ func (uu *UserUpdate) SetNillableSocialPayload(s *string) *UserUpdate {
 	return uu
 }
 
-// ClearSocialPayload clears the value of social_payload.
-func (uu *UserUpdate) ClearSocialPayload() *UserUpdate {
-	uu.mutation.ClearSocialPayload()
+// SetHeroRepeat sets the hero_repeat field.
+func (uu *UserUpdate) SetHeroRepeat(u uint) *UserUpdate {
+	uu.mutation.ResetHeroRepeat()
+	uu.mutation.SetHeroRepeat(u)
+	return uu
+}
+
+// SetNillableHeroRepeat sets the hero_repeat field if the given value is not nil.
+func (uu *UserUpdate) SetNillableHeroRepeat(u *uint) *UserUpdate {
+	if u != nil {
+		uu.SetHeroRepeat(*u)
+	}
+	return uu
+}
+
+// AddHeroRepeat adds u to hero_repeat.
+func (uu *UserUpdate) AddHeroRepeat(u uint) *UserUpdate {
+	uu.mutation.AddHeroRepeat(u)
 	return uu
 }
 
@@ -264,22 +249,10 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldSocialUserID,
 		})
 	}
-	if uu.mutation.SocialUserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialUserID,
-		})
-	}
 	if value, ok := uu.mutation.SocialAvatarURL(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldSocialAvatarURL,
-		})
-	}
-	if uu.mutation.SocialAvatarURLCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
 			Column: user.FieldSocialAvatarURL,
 		})
 	}
@@ -290,22 +263,10 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldSocialEmail,
 		})
 	}
-	if uu.mutation.SocialEmailCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialEmail,
-		})
-	}
 	if value, ok := uu.mutation.SocialName(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldSocialName,
-		})
-	}
-	if uu.mutation.SocialNameCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
 			Column: user.FieldSocialName,
 		})
 	}
@@ -316,12 +277,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldSocialType,
 		})
 	}
-	if uu.mutation.SocialTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialType,
-		})
-	}
 	if value, ok := uu.mutation.SocialPayload(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -329,10 +284,18 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldSocialPayload,
 		})
 	}
-	if uu.mutation.SocialPayloadCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialPayload,
+	if value, ok := uu.mutation.HeroRepeat(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroRepeat,
+		})
+	}
+	if value, ok := uu.mutation.AddedHeroRepeat(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroRepeat,
 		})
 	}
 	if value, ok := uu.mutation.CreatedAt(); ok {
@@ -393,12 +356,6 @@ func (uuo *UserUpdateOne) SetNillableSocialUserID(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// ClearSocialUserID clears the value of social_user_id.
-func (uuo *UserUpdateOne) ClearSocialUserID() *UserUpdateOne {
-	uuo.mutation.ClearSocialUserID()
-	return uuo
-}
-
 // SetSocialAvatarURL sets the social_avatar_url field.
 func (uuo *UserUpdateOne) SetSocialAvatarURL(s string) *UserUpdateOne {
 	uuo.mutation.SetSocialAvatarURL(s)
@@ -410,12 +367,6 @@ func (uuo *UserUpdateOne) SetNillableSocialAvatarURL(s *string) *UserUpdateOne {
 	if s != nil {
 		uuo.SetSocialAvatarURL(*s)
 	}
-	return uuo
-}
-
-// ClearSocialAvatarURL clears the value of social_avatar_url.
-func (uuo *UserUpdateOne) ClearSocialAvatarURL() *UserUpdateOne {
-	uuo.mutation.ClearSocialAvatarURL()
 	return uuo
 }
 
@@ -433,12 +384,6 @@ func (uuo *UserUpdateOne) SetNillableSocialEmail(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// ClearSocialEmail clears the value of social_email.
-func (uuo *UserUpdateOne) ClearSocialEmail() *UserUpdateOne {
-	uuo.mutation.ClearSocialEmail()
-	return uuo
-}
-
 // SetSocialName sets the social_name field.
 func (uuo *UserUpdateOne) SetSocialName(s string) *UserUpdateOne {
 	uuo.mutation.SetSocialName(s)
@@ -450,12 +395,6 @@ func (uuo *UserUpdateOne) SetNillableSocialName(s *string) *UserUpdateOne {
 	if s != nil {
 		uuo.SetSocialName(*s)
 	}
-	return uuo
-}
-
-// ClearSocialName clears the value of social_name.
-func (uuo *UserUpdateOne) ClearSocialName() *UserUpdateOne {
-	uuo.mutation.ClearSocialName()
 	return uuo
 }
 
@@ -473,12 +412,6 @@ func (uuo *UserUpdateOne) SetNillableSocialType(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// ClearSocialType clears the value of social_type.
-func (uuo *UserUpdateOne) ClearSocialType() *UserUpdateOne {
-	uuo.mutation.ClearSocialType()
-	return uuo
-}
-
 // SetSocialPayload sets the social_payload field.
 func (uuo *UserUpdateOne) SetSocialPayload(s string) *UserUpdateOne {
 	uuo.mutation.SetSocialPayload(s)
@@ -493,9 +426,24 @@ func (uuo *UserUpdateOne) SetNillableSocialPayload(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// ClearSocialPayload clears the value of social_payload.
-func (uuo *UserUpdateOne) ClearSocialPayload() *UserUpdateOne {
-	uuo.mutation.ClearSocialPayload()
+// SetHeroRepeat sets the hero_repeat field.
+func (uuo *UserUpdateOne) SetHeroRepeat(u uint) *UserUpdateOne {
+	uuo.mutation.ResetHeroRepeat()
+	uuo.mutation.SetHeroRepeat(u)
+	return uuo
+}
+
+// SetNillableHeroRepeat sets the hero_repeat field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableHeroRepeat(u *uint) *UserUpdateOne {
+	if u != nil {
+		uuo.SetHeroRepeat(*u)
+	}
+	return uuo
+}
+
+// AddHeroRepeat adds u to hero_repeat.
+func (uuo *UserUpdateOne) AddHeroRepeat(u uint) *UserUpdateOne {
+	uuo.mutation.AddHeroRepeat(u)
 	return uuo
 }
 
@@ -613,22 +561,10 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Column: user.FieldSocialUserID,
 		})
 	}
-	if uuo.mutation.SocialUserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialUserID,
-		})
-	}
 	if value, ok := uuo.mutation.SocialAvatarURL(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldSocialAvatarURL,
-		})
-	}
-	if uuo.mutation.SocialAvatarURLCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
 			Column: user.FieldSocialAvatarURL,
 		})
 	}
@@ -639,22 +575,10 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Column: user.FieldSocialEmail,
 		})
 	}
-	if uuo.mutation.SocialEmailCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialEmail,
-		})
-	}
 	if value, ok := uuo.mutation.SocialName(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: user.FieldSocialName,
-		})
-	}
-	if uuo.mutation.SocialNameCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
 			Column: user.FieldSocialName,
 		})
 	}
@@ -665,12 +589,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Column: user.FieldSocialType,
 		})
 	}
-	if uuo.mutation.SocialTypeCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialType,
-		})
-	}
 	if value, ok := uuo.mutation.SocialPayload(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -678,10 +596,18 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Column: user.FieldSocialPayload,
 		})
 	}
-	if uuo.mutation.SocialPayloadCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: user.FieldSocialPayload,
+	if value, ok := uuo.mutation.HeroRepeat(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroRepeat,
+		})
+	}
+	if value, ok := uuo.mutation.AddedHeroRepeat(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroRepeat,
 		})
 	}
 	if value, ok := uuo.mutation.CreatedAt(); ok {

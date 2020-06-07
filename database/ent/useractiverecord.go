@@ -17,7 +17,7 @@ type UserActiveRecord struct {
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
-	UserID *string `json:"user_id,omitempty"`
+	UserID string `json:"user_id,omitempty"`
 	// ActiveType holds the value of the "active_type" field.
 	ActiveType string `json:"active_type,omitempty"`
 	// Score holds the value of the "score" field.
@@ -64,8 +64,7 @@ func (uar *UserActiveRecord) assignValues(values ...interface{}) error {
 	if value, ok := values[0].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field user_id", values[0])
 	} else if value.Valid {
-		uar.UserID = new(string)
-		*uar.UserID = value.String
+		uar.UserID = value.String
 	}
 	if value, ok := values[1].(*sql.NullString); !ok {
 		return fmt.Errorf("unexpected type %T for field active_type", values[1])
@@ -132,10 +131,8 @@ func (uar *UserActiveRecord) String() string {
 	var builder strings.Builder
 	builder.WriteString("UserActiveRecord(")
 	builder.WriteString(fmt.Sprintf("id=%v", uar.ID))
-	if v := uar.UserID; v != nil {
-		builder.WriteString(", user_id=")
-		builder.WriteString(*v)
-	}
+	builder.WriteString(", user_id=")
+	builder.WriteString(uar.UserID)
 	builder.WriteString(", active_type=")
 	builder.WriteString(uar.ActiveType)
 	builder.WriteString(", score=")

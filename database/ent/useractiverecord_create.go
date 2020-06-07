@@ -26,14 +26,6 @@ func (uarc *UserActiveRecordCreate) SetUserID(s string) *UserActiveRecordCreate 
 	return uarc
 }
 
-// SetNillableUserID sets the user_id field if the given value is not nil.
-func (uarc *UserActiveRecordCreate) SetNillableUserID(s *string) *UserActiveRecordCreate {
-	if s != nil {
-		uarc.SetUserID(*s)
-	}
-	return uarc
-}
-
 // SetActiveType sets the active_type field.
 func (uarc *UserActiveRecordCreate) SetActiveType(s string) *UserActiveRecordCreate {
 	uarc.mutation.SetActiveType(s)
@@ -132,6 +124,9 @@ func (uarc *UserActiveRecordCreate) SetID(s string) *UserActiveRecordCreate {
 
 // Save creates the UserActiveRecord in the database.
 func (uarc *UserActiveRecordCreate) Save(ctx context.Context) (*UserActiveRecord, error) {
+	if _, ok := uarc.mutation.UserID(); !ok {
+		return nil, errors.New("ent: missing required field \"user_id\"")
+	}
 	if _, ok := uarc.mutation.ActiveType(); !ok {
 		return nil, errors.New("ent: missing required field \"active_type\"")
 	}
@@ -200,7 +195,7 @@ func (uarc *UserActiveRecordCreate) sqlSave(ctx context.Context) (*UserActiveRec
 			Value:  value,
 			Column: useractiverecord.FieldUserID,
 		})
-		uar.UserID = &value
+		uar.UserID = value
 	}
 	if value, ok := uarc.mutation.ActiveType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

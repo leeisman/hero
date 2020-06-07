@@ -14,14 +14,15 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Comment("pk"),
-		field.String("social_user_id").Nillable().Default("").Optional(),
-		field.String("social_avatar_url").Nillable().Default("").Optional(),
-		field.String("social_email").Nillable().Default("").Optional(),
-		field.String("social_name").Nillable().Default("").Optional(),
-		field.String("social_type").Nillable().Default("").Optional(),
-		field.String("social_payload").Nillable().Default("").Optional(),
-		field.Time("created_at").Nillable().Optional(),
-		field.Time("updated_at").Nillable().Optional(),
+		field.String("social_user_id").Default(""),
+		field.String("social_avatar_url").Default(""),
+		field.String("social_email").Default(""),
+		field.String("social_name").Default(""),
+		field.String("social_type").Default(""),
+		field.String("social_payload").Default(""),
+		field.Uint("hero_repeat").Default(0),
+		field.Time("created_at").Optional(),
+		field.Time("updated_at").Optional(),
 	}
 }
 

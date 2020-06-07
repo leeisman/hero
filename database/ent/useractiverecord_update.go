@@ -34,20 +34,6 @@ func (uaru *UserActiveRecordUpdate) SetUserID(s string) *UserActiveRecordUpdate 
 	return uaru
 }
 
-// SetNillableUserID sets the user_id field if the given value is not nil.
-func (uaru *UserActiveRecordUpdate) SetNillableUserID(s *string) *UserActiveRecordUpdate {
-	if s != nil {
-		uaru.SetUserID(*s)
-	}
-	return uaru
-}
-
-// ClearUserID clears the value of user_id.
-func (uaru *UserActiveRecordUpdate) ClearUserID() *UserActiveRecordUpdate {
-	uaru.mutation.ClearUserID()
-	return uaru
-}
-
 // SetActiveType sets the active_type field.
 func (uaru *UserActiveRecordUpdate) SetActiveType(s string) *UserActiveRecordUpdate {
 	uaru.mutation.SetActiveType(s)
@@ -72,12 +58,6 @@ func (uaru *UserActiveRecordUpdate) SetNillableScore(i *int) *UserActiveRecordUp
 // AddScore adds i to score.
 func (uaru *UserActiveRecordUpdate) AddScore(i int) *UserActiveRecordUpdate {
 	uaru.mutation.AddScore(i)
-	return uaru
-}
-
-// ClearScore clears the value of score.
-func (uaru *UserActiveRecordUpdate) ClearScore() *UserActiveRecordUpdate {
-	uaru.mutation.ClearScore()
 	return uaru
 }
 
@@ -258,12 +238,6 @@ func (uaru *UserActiveRecordUpdate) sqlSave(ctx context.Context) (n int, err err
 			Column: useractiverecord.FieldUserID,
 		})
 	}
-	if uaru.mutation.UserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: useractiverecord.FieldUserID,
-		})
-	}
 	if value, ok := uaru.mutation.ActiveType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -282,12 +256,6 @@ func (uaru *UserActiveRecordUpdate) sqlSave(ctx context.Context) (n int, err err
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: useractiverecord.FieldScore,
-		})
-	}
-	if uaru.mutation.ScoreCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
 			Column: useractiverecord.FieldScore,
 		})
 	}
@@ -381,20 +349,6 @@ func (uaruo *UserActiveRecordUpdateOne) SetUserID(s string) *UserActiveRecordUpd
 	return uaruo
 }
 
-// SetNillableUserID sets the user_id field if the given value is not nil.
-func (uaruo *UserActiveRecordUpdateOne) SetNillableUserID(s *string) *UserActiveRecordUpdateOne {
-	if s != nil {
-		uaruo.SetUserID(*s)
-	}
-	return uaruo
-}
-
-// ClearUserID clears the value of user_id.
-func (uaruo *UserActiveRecordUpdateOne) ClearUserID() *UserActiveRecordUpdateOne {
-	uaruo.mutation.ClearUserID()
-	return uaruo
-}
-
 // SetActiveType sets the active_type field.
 func (uaruo *UserActiveRecordUpdateOne) SetActiveType(s string) *UserActiveRecordUpdateOne {
 	uaruo.mutation.SetActiveType(s)
@@ -419,12 +373,6 @@ func (uaruo *UserActiveRecordUpdateOne) SetNillableScore(i *int) *UserActiveReco
 // AddScore adds i to score.
 func (uaruo *UserActiveRecordUpdateOne) AddScore(i int) *UserActiveRecordUpdateOne {
 	uaruo.mutation.AddScore(i)
-	return uaruo
-}
-
-// ClearScore clears the value of score.
-func (uaruo *UserActiveRecordUpdateOne) ClearScore() *UserActiveRecordUpdateOne {
-	uaruo.mutation.ClearScore()
 	return uaruo
 }
 
@@ -603,12 +551,6 @@ func (uaruo *UserActiveRecordUpdateOne) sqlSave(ctx context.Context) (uar *UserA
 			Column: useractiverecord.FieldUserID,
 		})
 	}
-	if uaruo.mutation.UserIDCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: useractiverecord.FieldUserID,
-		})
-	}
 	if value, ok := uaruo.mutation.ActiveType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -627,12 +569,6 @@ func (uaruo *UserActiveRecordUpdateOne) sqlSave(ctx context.Context) (uar *UserA
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: useractiverecord.FieldScore,
-		})
-	}
-	if uaruo.mutation.ScoreCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt,
 			Column: useractiverecord.FieldScore,
 		})
 	}
