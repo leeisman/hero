@@ -20,7 +20,8 @@ func (User) Fields() []ent.Field {
 		field.String("social_name").Default(""),
 		field.String("social_type").Default(""),
 		field.String("social_payload").Default(""),
-		field.Uint("hero_repeat").Default(0),
+		field.Uint("hero_played").Default(0).Comment("完成過hero"),
+		field.Uint("hero_repeat").Default(0).Comment("重過玩hero"),
 		field.Time("created_at").Optional(),
 		field.Time("updated_at").Optional(),
 	}

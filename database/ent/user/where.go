@@ -134,6 +134,13 @@ func SocialPayload(v string) predicate.User {
 	})
 }
 
+// HeroPlayed applies equality check predicate on the "hero_played" field. It's identical to HeroPlayedEQ.
+func HeroPlayed(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHeroPlayed), v))
+	})
+}
+
 // HeroRepeat applies equality check predicate on the "hero_repeat" field. It's identical to HeroRepeatEQ.
 func HeroRepeat(v uint) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -818,6 +825,82 @@ func SocialPayloadEqualFold(v string) predicate.User {
 func SocialPayloadContainsFold(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldSocialPayload), v))
+	})
+}
+
+// HeroPlayedEQ applies the EQ predicate on the "hero_played" field.
+func HeroPlayedEQ(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHeroPlayed), v))
+	})
+}
+
+// HeroPlayedNEQ applies the NEQ predicate on the "hero_played" field.
+func HeroPlayedNEQ(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldHeroPlayed), v))
+	})
+}
+
+// HeroPlayedIn applies the In predicate on the "hero_played" field.
+func HeroPlayedIn(vs ...uint) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldHeroPlayed), v...))
+	})
+}
+
+// HeroPlayedNotIn applies the NotIn predicate on the "hero_played" field.
+func HeroPlayedNotIn(vs ...uint) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldHeroPlayed), v...))
+	})
+}
+
+// HeroPlayedGT applies the GT predicate on the "hero_played" field.
+func HeroPlayedGT(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldHeroPlayed), v))
+	})
+}
+
+// HeroPlayedGTE applies the GTE predicate on the "hero_played" field.
+func HeroPlayedGTE(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldHeroPlayed), v))
+	})
+}
+
+// HeroPlayedLT applies the LT predicate on the "hero_played" field.
+func HeroPlayedLT(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldHeroPlayed), v))
+	})
+}
+
+// HeroPlayedLTE applies the LTE predicate on the "hero_played" field.
+func HeroPlayedLTE(v uint) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldHeroPlayed), v))
 	})
 }
 

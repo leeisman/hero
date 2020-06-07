@@ -17,6 +17,7 @@ var (
 		{Name: "social_name", Type: field.TypeString, Default: ""},
 		{Name: "social_type", Type: field.TypeString, Default: ""},
 		{Name: "social_payload", Type: field.TypeString, Default: ""},
+		{Name: "hero_played", Type: field.TypeUint},
 		{Name: "hero_repeat", Type: field.TypeUint},
 		{Name: "created_at", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime, Nullable: true},

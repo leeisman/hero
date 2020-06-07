@@ -38,8 +38,12 @@ func init() {
 	userDescSocialPayload := userFields[6].Descriptor()
 	// user.DefaultSocialPayload holds the default value on creation for the social_payload field.
 	user.DefaultSocialPayload = userDescSocialPayload.Default.(string)
+	// userDescHeroPlayed is the schema descriptor for hero_played field.
+	userDescHeroPlayed := userFields[7].Descriptor()
+	// user.DefaultHeroPlayed holds the default value on creation for the hero_played field.
+	user.DefaultHeroPlayed = userDescHeroPlayed.Default.(uint)
 	// userDescHeroRepeat is the schema descriptor for hero_repeat field.
-	userDescHeroRepeat := userFields[7].Descriptor()
+	userDescHeroRepeat := userFields[8].Descriptor()
 	// user.DefaultHeroRepeat holds the default value on creation for the hero_repeat field.
 	user.DefaultHeroRepeat = userDescHeroRepeat.Default.(uint)
 	useractiverecordFields := schema.UserActiveRecord{}.Fields()

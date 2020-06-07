@@ -28,6 +28,8 @@ type User struct {
 	SocialType string `json:"social_type,omitempty"`
 	// SocialPayload holds the value of the "social_payload" field.
 	SocialPayload string `json:"social_payload,omitempty"`
+	// HeroPlayed holds the value of the "hero_played" field.
+	HeroPlayed uint `json:"hero_played,omitempty"`
 	// HeroRepeat holds the value of the "hero_repeat" field.
 	HeroRepeat uint `json:"hero_repeat,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -46,6 +48,7 @@ func (*User) scanValues() []interface{} {
 		&sql.NullString{}, // social_name
 		&sql.NullString{}, // social_type
 		&sql.NullString{}, // social_payload
+		&sql.NullInt64{},  // hero_played
 		&sql.NullInt64{},  // hero_repeat
 		&sql.NullTime{},   // created_at
 		&sql.NullTime{},   // updated_at
@@ -95,17 +98,22 @@ func (u *User) assignValues(values ...interface{}) error {
 		u.SocialPayload = value.String
 	}
 	if value, ok := values[6].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hero_repeat", values[6])
+		return fmt.Errorf("unexpected type %T for field hero_played", values[6])
+	} else if value.Valid {
+		u.HeroPlayed = uint(value.Int64)
+	}
+	if value, ok := values[7].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hero_repeat", values[7])
 	} else if value.Valid {
 		u.HeroRepeat = uint(value.Int64)
 	}
-	if value, ok := values[7].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field created_at", values[7])
+	if value, ok := values[8].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field created_at", values[8])
 	} else if value.Valid {
 		u.CreatedAt = value.Time
 	}
-	if value, ok := values[8].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field updated_at", values[8])
+	if value, ok := values[9].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field updated_at", values[9])
 	} else if value.Valid {
 		u.UpdatedAt = value.Time
 	}
@@ -147,6 +155,8 @@ func (u *User) String() string {
 	builder.WriteString(u.SocialType)
 	builder.WriteString(", social_payload=")
 	builder.WriteString(u.SocialPayload)
+	builder.WriteString(", hero_played=")
+	builder.WriteString(fmt.Sprintf("%v", u.HeroPlayed))
 	builder.WriteString(", hero_repeat=")
 	builder.WriteString(fmt.Sprintf("%v", u.HeroRepeat))
 	builder.WriteString(", created_at=")

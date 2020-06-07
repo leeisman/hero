@@ -103,6 +103,20 @@ func (uc *UserCreate) SetNillableSocialPayload(s *string) *UserCreate {
 	return uc
 }
 
+// SetHeroPlayed sets the hero_played field.
+func (uc *UserCreate) SetHeroPlayed(u uint) *UserCreate {
+	uc.mutation.SetHeroPlayed(u)
+	return uc
+}
+
+// SetNillableHeroPlayed sets the hero_played field if the given value is not nil.
+func (uc *UserCreate) SetNillableHeroPlayed(u *uint) *UserCreate {
+	if u != nil {
+		uc.SetHeroPlayed(*u)
+	}
+	return uc
+}
+
 // SetHeroRepeat sets the hero_repeat field.
 func (uc *UserCreate) SetHeroRepeat(u uint) *UserCreate {
 	uc.mutation.SetHeroRepeat(u)
@@ -176,6 +190,10 @@ func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
 	if _, ok := uc.mutation.SocialPayload(); !ok {
 		v := user.DefaultSocialPayload
 		uc.mutation.SetSocialPayload(v)
+	}
+	if _, ok := uc.mutation.HeroPlayed(); !ok {
+		v := user.DefaultHeroPlayed
+		uc.mutation.SetHeroPlayed(v)
 	}
 	if _, ok := uc.mutation.HeroRepeat(); !ok {
 		v := user.DefaultHeroRepeat
@@ -279,6 +297,14 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Column: user.FieldSocialPayload,
 		})
 		u.SocialPayload = value
+	}
+	if value, ok := uc.mutation.HeroPlayed(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroPlayed,
+		})
+		u.HeroPlayed = value
 	}
 	if value, ok := uc.mutation.HeroRepeat(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

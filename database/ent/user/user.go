@@ -19,6 +19,8 @@ const (
 	FieldSocialType = "social_type"
 	// FieldSocialPayload holds the string denoting the social_payload field in the database.
 	FieldSocialPayload = "social_payload"
+	// FieldHeroPlayed holds the string denoting the hero_played field in the database.
+	FieldHeroPlayed = "hero_played"
 	// FieldHeroRepeat holds the string denoting the hero_repeat field in the database.
 	FieldHeroRepeat = "hero_repeat"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -39,6 +41,7 @@ var Columns = []string{
 	FieldSocialName,
 	FieldSocialType,
 	FieldSocialPayload,
+	FieldHeroPlayed,
 	FieldHeroRepeat,
 	FieldCreatedAt,
 	FieldUpdatedAt,
@@ -57,6 +60,8 @@ var (
 	DefaultSocialType string
 	// DefaultSocialPayload holds the default value on creation for the social_payload field.
 	DefaultSocialPayload string
+	// DefaultHeroPlayed holds the default value on creation for the hero_played field.
+	DefaultHeroPlayed uint
 	// DefaultHeroRepeat holds the default value on creation for the hero_repeat field.
 	DefaultHeroRepeat uint
 )

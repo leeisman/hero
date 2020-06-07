@@ -1,7 +1,8 @@
 package mysql
 
 import (
-	"context"
+	"database/sql"
+	entsql "github.com/facebookincubator/ent/dialect/sql"
 	"hero/configs"
 	"hero/database/ent"
 	"hero/pkg/logger"
@@ -14,19 +15,19 @@ var (
 
 func Client() *ent.Client {
 	localDataSourceName := configs.Get("database.mysql_url")
-	client, err := ent.Open("mysql", localDataSourceName)
+	db, err := sql.Open("mysql", localDataSourceName)
 	if err != nil {
 		logger.Error("failed connecting to mysql: " + err.Error())
+		return nil
 	}
-	// Add a global hook that runs on all types and all operations.
-	client.Use(func(next ent.Mutator) ent.Mutator {
-		return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-			start := time.Now()
-			defer func() {
-				logger.Printf("Op=%s\tType=%s\tTime=%s\tConcreteType=%T\n", m.Op(), m.Type(), time.Since(start), m)
-			}()
-			return next.Mutate(ctx, m)
-		})
-	})
-	return client
+	if db == nil {
+		logger.Error("db nil")
+		return nil
+	}
+	db.SetMaxIdleConns(10)
+	db.SetMaxOpenConns(100)
+	db.SetConnMaxLifetime(time.Hour)
+	// Create an ent.Driver from `db`.
+	drv := entsql.OpenDB("mysql", db)
+	return ent.NewClient(ent.Driver(drv))
 }

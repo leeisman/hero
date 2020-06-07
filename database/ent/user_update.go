@@ -112,6 +112,27 @@ func (uu *UserUpdate) SetNillableSocialPayload(s *string) *UserUpdate {
 	return uu
 }
 
+// SetHeroPlayed sets the hero_played field.
+func (uu *UserUpdate) SetHeroPlayed(u uint) *UserUpdate {
+	uu.mutation.ResetHeroPlayed()
+	uu.mutation.SetHeroPlayed(u)
+	return uu
+}
+
+// SetNillableHeroPlayed sets the hero_played field if the given value is not nil.
+func (uu *UserUpdate) SetNillableHeroPlayed(u *uint) *UserUpdate {
+	if u != nil {
+		uu.SetHeroPlayed(*u)
+	}
+	return uu
+}
+
+// AddHeroPlayed adds u to hero_played.
+func (uu *UserUpdate) AddHeroPlayed(u uint) *UserUpdate {
+	uu.mutation.AddHeroPlayed(u)
+	return uu
+}
+
 // SetHeroRepeat sets the hero_repeat field.
 func (uu *UserUpdate) SetHeroRepeat(u uint) *UserUpdate {
 	uu.mutation.ResetHeroRepeat()
@@ -284,6 +305,20 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldSocialPayload,
 		})
 	}
+	if value, ok := uu.mutation.HeroPlayed(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroPlayed,
+		})
+	}
+	if value, ok := uu.mutation.AddedHeroPlayed(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroPlayed,
+		})
+	}
 	if value, ok := uu.mutation.HeroRepeat(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint,
@@ -423,6 +458,27 @@ func (uuo *UserUpdateOne) SetNillableSocialPayload(s *string) *UserUpdateOne {
 	if s != nil {
 		uuo.SetSocialPayload(*s)
 	}
+	return uuo
+}
+
+// SetHeroPlayed sets the hero_played field.
+func (uuo *UserUpdateOne) SetHeroPlayed(u uint) *UserUpdateOne {
+	uuo.mutation.ResetHeroPlayed()
+	uuo.mutation.SetHeroPlayed(u)
+	return uuo
+}
+
+// SetNillableHeroPlayed sets the hero_played field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableHeroPlayed(u *uint) *UserUpdateOne {
+	if u != nil {
+		uuo.SetHeroPlayed(*u)
+	}
+	return uuo
+}
+
+// AddHeroPlayed adds u to hero_played.
+func (uuo *UserUpdateOne) AddHeroPlayed(u uint) *UserUpdateOne {
+	uuo.mutation.AddHeroPlayed(u)
 	return uuo
 }
 
@@ -594,6 +650,20 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: user.FieldSocialPayload,
+		})
+	}
+	if value, ok := uuo.mutation.HeroPlayed(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroPlayed,
+		})
+	}
+	if value, ok := uuo.mutation.AddedHeroPlayed(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint,
+			Value:  value,
+			Column: user.FieldHeroPlayed,
 		})
 	}
 	if value, ok := uuo.mutation.HeroRepeat(); ok {

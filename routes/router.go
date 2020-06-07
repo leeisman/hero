@@ -20,13 +20,14 @@ func Run() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	e.Use(middleware.RequestID())
-	e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
-		requestID := c.Response().Header().Get(echo.HeaderXRequestID)
-		logger.Print(c.Request().URL, "BodyDump reqBody", requestID, string(reqBody))
-		logger.Print(c.Request().URL, "BodyDump resBody", requestID, string(resBody))
-	}))
-	//安全性驗證
+
 	if configs.EnvPath != "local" {
+		e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
+			requestID := c.Response().Header().Get(echo.HeaderXRequestID)
+			logger.Print(c.Request().URL, "BodyDump reqBody", requestID, string(reqBody))
+			logger.Print(c.Request().URL, "BodyDump resBody", requestID, string(resBody))
+		}))
+		//安全性驗證
 		e.Use(middleware.KeyAuth(func(key string, c echo.Context) (bool, error) {
 			requestID := c.Response().Header().Get(echo.HeaderXRequestID)
 			body := &struct {

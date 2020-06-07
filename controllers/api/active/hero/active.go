@@ -78,6 +78,7 @@ func Play(c echo.Context) error {
 	if userActiveRecord == nil {
 		return controllers.ResponseFail(fmt.Errorf("Create user active record fail: %s", request.FbUserID), c)
 	}
+	countFinishedOrUnfinishedUserTotal(ctx, 0)
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
@@ -85,6 +86,9 @@ func Record(c echo.Context) error {
 	ctx := context.Background()
 	request := &RecordRequest{}
 	err := c.Bind(request)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
 	userActiveRecord, err := userActiveRecordRepository.FindByID(ctx, request.RecordID)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
@@ -96,13 +100,18 @@ func Record(c echo.Context) error {
 		return controllers.ResponseFail(fmt.Errorf("already finished"), c)
 	}
 	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
+	repeatStatus := user.HeroRepeat
 	if user == nil {
 		return controllers.ResponseFail(fmt.Errorf("User no found: %s", request.FbUserID), c)
 	}
 	if userActiveRecord.UserID != user.ID {
 		return controllers.ResponseFail(fmt.Errorf("Record no match user: %s", request.FbUserID), c)
 	}
-	_, err = user.Update().SetHeroRepeat(1).Save(ctx)
+	queryBuilder := user.Update().SetHeroPlayed(1)
+	if user.HeroPlayed == 1 {
+		queryBuilder.SetHeroRepeat(1)
+	}
+	queryBuilder.Save(ctx)
 	if err != nil {
 		return controllers.ResponseFail(fmt.Errorf("Change user repeat type err: %s", request.FbUserID), c)
 	}
@@ -116,7 +125,8 @@ func Record(c echo.Context) error {
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	countFinishUserTotal(ctx)
+	countFinishedOrUnfinishedUserTotal(ctx, 1)
+	countRepeatOrNotRepeatUserTotal(ctx, repeatStatus, user.ID)
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
@@ -150,19 +160,25 @@ func Tracking(c echo.Context) error {
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
-func countFinishUserTotal(ctx context.Context) {
-	result := redis.Client().Incr(ctx, enums.RedisFinishedGameCount)
-	logger.Print(enums.RedisFinishedGameCount, result)
+func countFinishedOrUnfinishedUserTotal(ctx context.Context, isFinished uint) {
+	if isFinished == 1 {
+		finished := redis.Client().Incr(ctx, enums.RedisFinishedGameCount)
+		unfinished := redis.Client().Decr(ctx, enums.RedisUnfinishedGameCount)
+		logger.Print(enums.RedisFinishedGameCount, finished.String())
+		logger.Print(enums.RedisUnfinishedGameCount, unfinished.String())
+	} else {
+		result := redis.Client().Incr(ctx, enums.RedisUnfinishedGameCount)
+		logger.Print(enums.RedisFinishedGameCount, result.String())
+	}
 }
 
-func countRepeatUserTotal() {
-
-}
-
-func countNotRepeatUserTotal() {
-
-}
-
-func countExitUserTotal() {
-
+func countRepeatOrNotRepeatUserTotal(ctx context.Context, repeatStatus uint, userID string) {
+	if repeatStatus == 1 {
+		redis.Client().HSet(ctx, enums.RedisRepeatUserCount, userID, 1)
+		redis.Client().HDel(ctx, enums.RedisNotRepeatUserCount, userID)
+	} else {
+		redis.Client().HSet(ctx, enums.RedisNotRepeatUserCount, userID, 1)
+	}
+	logger.Print(enums.RedisRepeatUserCount, redis.Client().HLen(ctx, enums.RedisRepeatUserCount).String())
+	logger.Print(enums.RedisNotRepeatUserCount, redis.Client().HLen(ctx, enums.RedisNotRepeatUserCount).String())
 }

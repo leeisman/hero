@@ -39,6 +39,8 @@ type UserMutation struct {
 	social_name       *string
 	social_type       *string
 	social_payload    *string
+	hero_played       *uint
+	addhero_played    *uint
 	hero_repeat       *uint
 	addhero_repeat    *uint
 	created_at        *time.Time
@@ -355,6 +357,63 @@ func (m *UserMutation) ResetSocialPayload() {
 	m.social_payload = nil
 }
 
+// SetHeroPlayed sets the hero_played field.
+func (m *UserMutation) SetHeroPlayed(u uint) {
+	m.hero_played = &u
+	m.addhero_played = nil
+}
+
+// HeroPlayed returns the hero_played value in the mutation.
+func (m *UserMutation) HeroPlayed() (r uint, exists bool) {
+	v := m.hero_played
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHeroPlayed returns the old hero_played value of the User.
+// If the User object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *UserMutation) OldHeroPlayed(ctx context.Context) (v uint, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldHeroPlayed is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldHeroPlayed requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHeroPlayed: %w", err)
+	}
+	return oldValue.HeroPlayed, nil
+}
+
+// AddHeroPlayed adds u to hero_played.
+func (m *UserMutation) AddHeroPlayed(u uint) {
+	if m.addhero_played != nil {
+		*m.addhero_played += u
+	} else {
+		m.addhero_played = &u
+	}
+}
+
+// AddedHeroPlayed returns the value that was added to the hero_played field in this mutation.
+func (m *UserMutation) AddedHeroPlayed() (r uint, exists bool) {
+	v := m.addhero_played
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetHeroPlayed reset all changes of the "hero_played" field.
+func (m *UserMutation) ResetHeroPlayed() {
+	m.hero_played = nil
+	m.addhero_played = nil
+}
+
 // SetHeroRepeat sets the hero_repeat field.
 func (m *UserMutation) SetHeroRepeat(u uint) {
 	m.hero_repeat = &u
@@ -526,7 +585,7 @@ func (m *UserMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.social_user_id != nil {
 		fields = append(fields, user.FieldSocialUserID)
 	}
@@ -544,6 +603,9 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.social_payload != nil {
 		fields = append(fields, user.FieldSocialPayload)
+	}
+	if m.hero_played != nil {
+		fields = append(fields, user.FieldHeroPlayed)
 	}
 	if m.hero_repeat != nil {
 		fields = append(fields, user.FieldHeroRepeat)
@@ -574,6 +636,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.SocialType()
 	case user.FieldSocialPayload:
 		return m.SocialPayload()
+	case user.FieldHeroPlayed:
+		return m.HeroPlayed()
 	case user.FieldHeroRepeat:
 		return m.HeroRepeat()
 	case user.FieldCreatedAt:
@@ -601,6 +665,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSocialType(ctx)
 	case user.FieldSocialPayload:
 		return m.OldSocialPayload(ctx)
+	case user.FieldHeroPlayed:
+		return m.OldHeroPlayed(ctx)
 	case user.FieldHeroRepeat:
 		return m.OldHeroRepeat(ctx)
 	case user.FieldCreatedAt:
@@ -658,6 +724,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSocialPayload(v)
 		return nil
+	case user.FieldHeroPlayed:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHeroPlayed(v)
+		return nil
 	case user.FieldHeroRepeat:
 		v, ok := value.(uint)
 		if !ok {
@@ -687,6 +760,9 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 // or decremented during this mutation.
 func (m *UserMutation) AddedFields() []string {
 	var fields []string
+	if m.addhero_played != nil {
+		fields = append(fields, user.FieldHeroPlayed)
+	}
 	if m.addhero_repeat != nil {
 		fields = append(fields, user.FieldHeroRepeat)
 	}
@@ -698,6 +774,8 @@ func (m *UserMutation) AddedFields() []string {
 // that this field was not set, or was not define in the schema.
 func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case user.FieldHeroPlayed:
+		return m.AddedHeroPlayed()
 	case user.FieldHeroRepeat:
 		return m.AddedHeroRepeat()
 	}
@@ -709,6 +787,13 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case user.FieldHeroPlayed:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHeroPlayed(v)
+		return nil
 	case user.FieldHeroRepeat:
 		v, ok := value.(uint)
 		if !ok {
@@ -776,6 +861,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldSocialPayload:
 		m.ResetSocialPayload()
+		return nil
+	case user.FieldHeroPlayed:
+		m.ResetHeroPlayed()
 		return nil
 	case user.FieldHeroRepeat:
 		m.ResetHeroRepeat()
