@@ -3,6 +3,7 @@ package configs
 import (
 	viper "github.com/spf13/viper"
 	"hero/pkg/logger"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -15,7 +16,10 @@ var (
 func init() {
 	viper.SetConfigType("yaml")
 	cacheMap = make(map[string]string)
-	EnvPath = Get("env.env")
+	if EnvPath = os.Getenv("env"); EnvPath == "" {
+		EnvPath = "local"
+	}
+	logger.Print("env", EnvPath)
 }
 
 func Get(target string) string {

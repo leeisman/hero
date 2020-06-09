@@ -10,12 +10,12 @@ import (
 )
 
 var (
-	defaultClient *ent.Client
+	defaultDB *sql.DB
 )
 
 func Client() *ent.Client {
-	localDataSourceName := configs.Get("database.mysql_url")
-	db, err := sql.Open("mysql", localDataSourceName)
+	dataSourceName := configs.Get("database.mysql_url")
+	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
 		logger.Error("failed connecting to mysql: " + err.Error())
 		return nil
@@ -29,5 +29,23 @@ func Client() *ent.Client {
 	db.SetConnMaxLifetime(time.Hour)
 	// Create an ent.Driver from `db`.
 	drv := entsql.OpenDB("mysql", db)
+
+	db2, err := sql.Open("mysql", dataSourceName)
+	if err != nil {
+		logger.Error("failed connecting to mysql: " + err.Error())
+		return nil
+	}
+	if db2 == nil {
+		logger.Error("db nil")
+		return nil
+	}
+	db2.SetMaxIdleConns(10)
+	db2.SetMaxOpenConns(100)
+	db2.SetConnMaxLifetime(time.Hour)
+	defaultDB = db2
 	return ent.NewClient(ent.Driver(drv))
+}
+
+func DB() *sql.DB {
+	return defaultDB
 }

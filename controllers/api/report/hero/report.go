@@ -107,16 +107,7 @@ func ScoreCount(c echo.Context) error {
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	//轉換時間
-	startT, err := time.Parse(TimeLayout, request.StartAt)
-	if err != nil {
-		return controllers.ResponseFail(err, c)
-	}
-	endT, err := time.Parse(TimeLayout, request.EndAt)
-	if err != nil {
-		return controllers.ResponseFail(err, c)
-	}
-	scoreCount := user_active_record.CountScore(ctx, request.Score, startT, endT)
+	scoreCount := user_active_record.CountScore(ctx, request.Score, request.StartAt, request.EndAt)
 
 	return controllers.ResponseSuccess(scoreCount, c)
 }

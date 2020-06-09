@@ -43,6 +43,9 @@ func Print(v ...interface{}) {
 		value, ok := subData.(string)
 		if ok {
 			data += value + " | "
+		} else {
+			log.Print(v)
+			return
 		}
 	}
 	log.Print(data)

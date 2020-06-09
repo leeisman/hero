@@ -5,14 +5,13 @@ import (
 	"github.com/rs/xid"
 	"hero/database/ent"
 	tableUserActiveRecord "hero/database/ent/useractiverecord"
-	"hero/enums"
 	"hero/pkg/db/mysql"
 	"hero/pkg/logger"
 	"time"
 )
 
 type SelectScoreCounts struct {
-	ScoreCounts []struct{
+	ScoreCounts []struct {
 		UserID string `json:"user_id"`
 	}
 }
@@ -46,25 +45,21 @@ func CountRecord(ctx context.Context, activeType string, startAt, endAt time.Tim
 		).Count(ctx)
 }
 
-func CountScore(ctx context.Context, score int, startAt, endAt time.Time) int {
-	data := make([]interface{}, 5)
-	err := mysql.Client().UserActiveRecord.Query().
-		Where(
-			tableUserActiveRecord.And(
-				tableUserActiveRecord.ActiveType(enums.ActiveTypeHeroGame),
-				tableUserActiveRecord.ScoreEQ(score),
-				tableUserActiveRecord.CreatedAtGTE(startAt),
-				tableUserActiveRecord.CreatedAtLTE(endAt),
-			),
-		).
-		Select(
-			tableUserActiveRecord.FieldUserID,
-		).Scan(ctx, data)
+func CountScore(ctx context.Context, score int, startAt, endAt string) int {
+	rows, err := mysql.DB().QueryContext(ctx, "select count(distinct(user_id)) from user_active_records where score = ? and started_at >= ? and ended_at <= ? ", score, startAt, endAt)
 	if err != nil {
-		logger.Print("!!!!!!!!!!!!!!!", err.Error())
-		return 0
+		logger.Print("err", err.Error())
 	}
-	logger.Print("!!!!!!!!!!!!!!!", data)
+	defer rows.Close()
 
-	return 0
+	userIDCount := 0
+	for rows.Next() {
+		var count int
+		if err := rows.Scan(&count); err != nil {
+			logger.Print("err", err.Error())
+		}
+		userIDCount = count
+	}
+
+	return userIDCount
 }

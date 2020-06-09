@@ -4,7 +4,6 @@ import (
 	"context"
 	redis "github.com/go-redis/redis/v8"
 	"hero/configs"
-	"hero/enums"
 	"hero/pkg/logger"
 )
 
@@ -24,7 +23,7 @@ func init() {
 	_, err := client.Ping(ctx).Result()
 	if err != nil {
 		logger.Print("redis init", err.Error())
-		panic(enums.ErrorRedisPingFail)
+		//panic(enums.ErrorRedisPingFail)
 	}
 	logger.Print("redis init", "success")
 	defaultClient = client
