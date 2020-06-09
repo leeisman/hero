@@ -11,5 +11,4 @@ gcloud run deploy "${SERVICE_NAME}" \
       --region  us-west1 \
       --project "${PROJECT_NAME}" \
       --set-env-vars  ^$$^env="${ENV}" \
-      --set-env-vars  ^$$^port="${PORT}" \
-      --args 'hero','--port','9000'
+

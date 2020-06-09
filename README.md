@@ -57,3 +57,26 @@ Md5 雜湊加上 fb user ID：
     "type":"hero_share" //分享：hero_share, 下載:hero_download  
 }  
 ```
+
+### 遊戲紀錄報表  
+- Method: **GET**  
+- URL: ```/api/report/hero/count```   
+- Body:  
+```  
+{
+    "start_at": "2020-06-07 00:00:00",
+    "end_at": "2020-06-08 23:59:59"
+} 
+```
+
+### 遊戲答題人數統計
+- Method: **GET**  
+- URL: ```/api/report/hero/score_count```   
+- Body:  
+```  
+{
+    "score": 1000,
+    "start_at": "2020-06-09 00:00:00",
+    "end_at": "2020-06-11 23:59:59"
+}
+```
