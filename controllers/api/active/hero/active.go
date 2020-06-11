@@ -45,6 +45,7 @@ func Play(c echo.Context) error {
 	//找不到user也會當err,故不處理err
 	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
 	if user == nil {
+		logger.Printf("not found user id ", request.FbUserID)
 		newXID := xid.New()
 		id := "UR_" + newXID.String()
 		user, err = userRepository.Create(ctx, &ent.User{
