@@ -51,5 +51,6 @@ func Create(ctx context.Context, user *ent.User) (*ent.User, error) {
 		SetSocialName(user.SocialName).
 		SetCreatedAt(user.CreatedAt).
 		SetUpdatedAt(user.UpdatedAt).
+		SetHeroScore(0).
 		Save(ctx)
 }

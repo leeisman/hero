@@ -10,6 +10,7 @@ import (
 	"hero/configs"
 	"hero/pkg/logger"
 	"io/ioutil"
+	"os"
 )
 
 func Run() {
@@ -51,5 +52,9 @@ func Run() {
 	}
 	InitApi(e)
 	InitAdmin(e)
+
+	if configs.EnvPath != "local" {
+		port = os.Getenv("PORT")
+	}
 	e.Logger.Fatal(e.Start(":" + port))
 }

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"hero/database/ent/user"
 	"time"
@@ -17,6 +18,12 @@ type UserCreate struct {
 	config
 	mutation *UserMutation
 	hooks    []Hook
+}
+
+// SetHeroScore sets the hero_score field.
+func (uc *UserCreate) SetHeroScore(i int) *UserCreate {
+	uc.mutation.SetHeroScore(i)
+	return uc
 }
 
 // SetSocialUserID sets the social_user_id field.
@@ -167,6 +174,9 @@ func (uc *UserCreate) SetID(s string) *UserCreate {
 
 // Save creates the User in the database.
 func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
+	if _, ok := uc.mutation.HeroScore(); !ok {
+		return nil, errors.New("ent: missing required field \"hero_score\"")
+	}
 	if _, ok := uc.mutation.SocialUserID(); !ok {
 		v := user.DefaultSocialUserID
 		uc.mutation.SetSocialUserID(v)
@@ -249,6 +259,14 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 	if id, ok := uc.mutation.ID(); ok {
 		u.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := uc.mutation.HeroScore(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldHeroScore,
+		})
+		u.HeroScore = value
 	}
 	if value, ok := uc.mutation.SocialUserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

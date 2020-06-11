@@ -8,7 +8,8 @@ gcloud run deploy "${SERVICE_NAME}" \
       --memory 128Mi \
       --max-instances 1 \
       --platform managed \
-      --region  us-west1 \
+      --region  asia-east2 \
       --project "${PROJECT_NAME}" \
-      --set-env-vars  ^$$^env="${ENV}" \
+      --set-env-vars  ^$$^ENV="${ENV}" \
+      --set-env-vars  ^$$^PORT="${PORT}" \
 

@@ -449,7 +449,6 @@ func (uargb *UserActiveRecordGroupBy) StringsX(ctx context.Context) []string {
 }
 
 // Ints returns list of ints from group-by. It is only allowed when querying group-by with one field.
-
 func (uargb *UserActiveRecordGroupBy) Ints(ctx context.Context) ([]int, error) {
 	if len(uargb.fields) > 1 {
 		return nil, errors.New("ent: UserActiveRecordGroupBy.Ints is not achievable when grouping more than 1 field")

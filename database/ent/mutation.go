@@ -33,6 +33,8 @@ type UserMutation struct {
 	op                Op
 	typ               string
 	id                *string
+	hero_score        *int
+	addhero_score     *int
 	social_user_id    *string
 	social_avatar_url *string
 	social_email      *string
@@ -133,6 +135,63 @@ func (m *UserMutation) ID() (id string, exists bool) {
 		return
 	}
 	return *m.id, true
+}
+
+// SetHeroScore sets the hero_score field.
+func (m *UserMutation) SetHeroScore(i int) {
+	m.hero_score = &i
+	m.addhero_score = nil
+}
+
+// HeroScore returns the hero_score value in the mutation.
+func (m *UserMutation) HeroScore() (r int, exists bool) {
+	v := m.hero_score
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHeroScore returns the old hero_score value of the User.
+// If the User object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *UserMutation) OldHeroScore(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldHeroScore is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldHeroScore requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHeroScore: %w", err)
+	}
+	return oldValue.HeroScore, nil
+}
+
+// AddHeroScore adds i to hero_score.
+func (m *UserMutation) AddHeroScore(i int) {
+	if m.addhero_score != nil {
+		*m.addhero_score += i
+	} else {
+		m.addhero_score = &i
+	}
+}
+
+// AddedHeroScore returns the value that was added to the hero_score field in this mutation.
+func (m *UserMutation) AddedHeroScore() (r int, exists bool) {
+	v := m.addhero_score
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetHeroScore reset all changes of the "hero_score" field.
+func (m *UserMutation) ResetHeroScore() {
+	m.hero_score = nil
+	m.addhero_score = nil
 }
 
 // SetSocialUserID sets the social_user_id field.
@@ -585,7 +644,10 @@ func (m *UserMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
+	if m.hero_score != nil {
+		fields = append(fields, user.FieldHeroScore)
+	}
 	if m.social_user_id != nil {
 		fields = append(fields, user.FieldSocialUserID)
 	}
@@ -624,6 +686,8 @@ func (m *UserMutation) Fields() []string {
 // not set, or was not define in the schema.
 func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case user.FieldHeroScore:
+		return m.HeroScore()
 	case user.FieldSocialUserID:
 		return m.SocialUserID()
 	case user.FieldSocialAvatarURL:
@@ -653,6 +717,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // or the query to the database was failed.
 func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case user.FieldHeroScore:
+		return m.OldHeroScore(ctx)
 	case user.FieldSocialUserID:
 		return m.OldSocialUserID(ctx)
 	case user.FieldSocialAvatarURL:
@@ -682,6 +748,13 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type mismatch the field type.
 func (m *UserMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case user.FieldHeroScore:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHeroScore(v)
+		return nil
 	case user.FieldSocialUserID:
 		v, ok := value.(string)
 		if !ok {
@@ -760,6 +833,9 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 // or decremented during this mutation.
 func (m *UserMutation) AddedFields() []string {
 	var fields []string
+	if m.addhero_score != nil {
+		fields = append(fields, user.FieldHeroScore)
+	}
 	if m.addhero_played != nil {
 		fields = append(fields, user.FieldHeroPlayed)
 	}
@@ -774,6 +850,8 @@ func (m *UserMutation) AddedFields() []string {
 // that this field was not set, or was not define in the schema.
 func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case user.FieldHeroScore:
+		return m.AddedHeroScore()
 	case user.FieldHeroPlayed:
 		return m.AddedHeroPlayed()
 	case user.FieldHeroRepeat:
@@ -787,6 +865,13 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case user.FieldHeroScore:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddHeroScore(v)
+		return nil
 	case user.FieldHeroPlayed:
 		v, ok := value.(uint)
 		if !ok {
@@ -844,6 +929,9 @@ func (m *UserMutation) ClearField(name string) error {
 // defined in the schema.
 func (m *UserMutation) ResetField(name string) error {
 	switch name {
+	case user.FieldHeroScore:
+		m.ResetHeroScore()
+		return nil
 	case user.FieldSocialUserID:
 		m.ResetSocialUserID()
 		return nil

@@ -18,15 +18,16 @@ type UserCountRequest struct {
 }
 
 type UserCountResponse struct {
-	FinishedUserCount   int       `json:"finished_user_count"`
-	RepeatUserCount     int       `json:"repeat_user_count"`
-	NotRepeatUserCount  int       `json:"not_repeat_user_count"`
-	UnfinishedUserCount int       `json:"unfinished_user_count"`
-	PlayGameCount       int       `json:"play_game_count"`
-	ShareCount          int       `json:"share_count"`
-	DownloadGameCount   int       `json:"download_game_count"`
-	StartAt             time.Time `json:"start_at"`
-	EndAt               time.Time `json:"end_at"`
+	FinishedUserCount   int               `json:"finished_user_count"`
+	RepeatUserCount     int               `json:"repeat_user_count"`
+	NotRepeatUserCount  int               `json:"not_repeat_user_count"`
+	UnfinishedUserCount int               `json:"unfinished_user_count"`
+	PlayGameCount       int               `json:"play_game_count"`
+	ShareCount          int               `json:"share_count"`
+	DownloadGameCount   int               `json:"download_game_count"`
+	StartAt             time.Time         `json:"start_at"`
+	EndAt               time.Time         `json:"end_at"`
+	Node                map[string]string `json:"node"`
 }
 
 type ScoreCountRequest struct {
@@ -86,6 +87,15 @@ func UserCount(c echo.Context) error {
 		return controllers.ResponseFail(err, c)
 	}
 
+	node := map[string]string{
+		"finished_user_count":   "總參與人數：完成遊戲的總人數，跳出不計算",
+		"repeat_user_count":     "重複玩人數：同一玩家重複完整玩完的人數",
+		"not_repeat_user_count": "不重複玩人數：玩家完整玩完的不重複玩人數",
+		"unfinished_user_count": "跳出人數：未完成遊戲的跳出人數",
+		"play_game_count":       "開始遊戲",
+		"share_count":           "分享遊戲",
+		"download_game_count":   "下載遊戲",
+	}
 	response := &UserCountResponse{
 		FinishedUserCount:   repeatUserCount + notRepeatUserCount,
 		RepeatUserCount:     repeatUserCount,
@@ -96,6 +106,7 @@ func UserCount(c echo.Context) error {
 		DownloadGameCount:   downloadGameCount,
 		StartAt:             startT,
 		EndAt:               endT,
+		Node:                node,
 	}
 	return controllers.ResponseSuccess(response, c)
 }
@@ -108,6 +119,5 @@ func ScoreCount(c echo.Context) error {
 		return controllers.ResponseFail(err, c)
 	}
 	scoreCount := user_active_record.CountScore(ctx, request.Score, request.StartAt, request.EndAt)
-
 	return controllers.ResponseSuccess(scoreCount, c)
 }

@@ -6,27 +6,18 @@ const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "id"
-	// FieldSocialUserID holds the string denoting the social_user_id field in the database.
-	FieldSocialUserID = "social_user_id"
-	// FieldSocialAvatarURL holds the string denoting the social_avatar_url field in the database.
-	FieldSocialAvatarURL = "social_avatar_url"
-	// FieldSocialEmail holds the string denoting the social_email field in the database.
-	FieldSocialEmail = "social_email"
-	// FieldSocialName holds the string denoting the social_name field in the database.
-	FieldSocialName = "social_name"
-	// FieldSocialType holds the string denoting the social_type field in the database.
-	FieldSocialType = "social_type"
-	// FieldSocialPayload holds the string denoting the social_payload field in the database.
-	FieldSocialPayload = "social_payload"
-	// FieldHeroPlayed holds the string denoting the hero_played field in the database.
-	FieldHeroPlayed = "hero_played"
-	// FieldHeroRepeat holds the string denoting the hero_repeat field in the database.
-	FieldHeroRepeat = "hero_repeat"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
+	FieldID              = "id"                // FieldHeroScore holds the string denoting the hero_score vertex property in the database.
+	FieldHeroScore       = "hero_score"        // FieldSocialUserID holds the string denoting the social_user_id vertex property in the database.
+	FieldSocialUserID    = "social_user_id"    // FieldSocialAvatarURL holds the string denoting the social_avatar_url vertex property in the database.
+	FieldSocialAvatarURL = "social_avatar_url" // FieldSocialEmail holds the string denoting the social_email vertex property in the database.
+	FieldSocialEmail     = "social_email"      // FieldSocialName holds the string denoting the social_name vertex property in the database.
+	FieldSocialName      = "social_name"       // FieldSocialType holds the string denoting the social_type vertex property in the database.
+	FieldSocialType      = "social_type"       // FieldSocialPayload holds the string denoting the social_payload vertex property in the database.
+	FieldSocialPayload   = "social_payload"    // FieldHeroPlayed holds the string denoting the hero_played vertex property in the database.
+	FieldHeroPlayed      = "hero_played"       // FieldHeroRepeat holds the string denoting the hero_repeat vertex property in the database.
+	FieldHeroRepeat      = "hero_repeat"       // FieldCreatedAt holds the string denoting the created_at vertex property in the database.
+	FieldCreatedAt       = "created_at"        // FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
+	FieldUpdatedAt       = "updated_at"
 
 	// Table holds the table name of the user in the database.
 	Table = "users"
@@ -35,6 +26,7 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
+	FieldHeroScore,
 	FieldSocialUserID,
 	FieldSocialAvatarURL,
 	FieldSocialEmail,

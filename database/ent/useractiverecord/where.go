@@ -171,7 +171,7 @@ func UserIDIn(vs ...string) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -188,7 +188,7 @@ func UserIDNotIn(vs ...string) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -282,7 +282,7 @@ func ActiveTypeIn(vs ...string) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -299,7 +299,7 @@ func ActiveTypeNotIn(vs ...string) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -393,7 +393,7 @@ func ScoreIn(vs ...int) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -410,7 +410,7 @@ func ScoreNotIn(vs ...int) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -469,7 +469,7 @@ func IsFinishedIn(vs ...uint) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -486,7 +486,7 @@ func IsFinishedNotIn(vs ...uint) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -545,7 +545,7 @@ func StartedAtIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -562,7 +562,7 @@ func StartedAtNotIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -635,7 +635,7 @@ func EndedAtIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -652,7 +652,7 @@ func EndedAtNotIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -725,7 +725,7 @@ func CreatedAtIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -742,7 +742,7 @@ func CreatedAtNotIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -815,7 +815,7 @@ func UpdatedAtIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -832,7 +832,7 @@ func UpdatedAtNotIn(vs ...time.Time) predicate.UserActiveRecord {
 	return predicate.UserActiveRecord(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}

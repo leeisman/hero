@@ -92,6 +92,13 @@ func IDLTE(id string) predicate.User {
 	})
 }
 
+// HeroScore applies equality check predicate on the "hero_score" field. It's identical to HeroScoreEQ.
+func HeroScore(v int) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHeroScore), v))
+	})
+}
+
 // SocialUserID applies equality check predicate on the "social_user_id" field. It's identical to SocialUserIDEQ.
 func SocialUserID(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -162,6 +169,82 @@ func UpdatedAt(v time.Time) predicate.User {
 	})
 }
 
+// HeroScoreEQ applies the EQ predicate on the "hero_score" field.
+func HeroScoreEQ(v int) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldHeroScore), v))
+	})
+}
+
+// HeroScoreNEQ applies the NEQ predicate on the "hero_score" field.
+func HeroScoreNEQ(v int) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldHeroScore), v))
+	})
+}
+
+// HeroScoreIn applies the In predicate on the "hero_score" field.
+func HeroScoreIn(vs ...int) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldHeroScore), v...))
+	})
+}
+
+// HeroScoreNotIn applies the NotIn predicate on the "hero_score" field.
+func HeroScoreNotIn(vs ...int) predicate.User {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.User(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(vs) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldHeroScore), v...))
+	})
+}
+
+// HeroScoreGT applies the GT predicate on the "hero_score" field.
+func HeroScoreGT(v int) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldHeroScore), v))
+	})
+}
+
+// HeroScoreGTE applies the GTE predicate on the "hero_score" field.
+func HeroScoreGTE(v int) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldHeroScore), v))
+	})
+}
+
+// HeroScoreLT applies the LT predicate on the "hero_score" field.
+func HeroScoreLT(v int) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldHeroScore), v))
+	})
+}
+
+// HeroScoreLTE applies the LTE predicate on the "hero_score" field.
+func HeroScoreLTE(v int) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldHeroScore), v))
+	})
+}
+
 // SocialUserIDEQ applies the EQ predicate on the "social_user_id" field.
 func SocialUserIDEQ(v string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -185,7 +268,7 @@ func SocialUserIDIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -202,7 +285,7 @@ func SocialUserIDNotIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -296,7 +379,7 @@ func SocialAvatarURLIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -313,7 +396,7 @@ func SocialAvatarURLNotIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -407,7 +490,7 @@ func SocialEmailIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -424,7 +507,7 @@ func SocialEmailNotIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -518,7 +601,7 @@ func SocialNameIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -535,7 +618,7 @@ func SocialNameNotIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -629,7 +712,7 @@ func SocialTypeIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -646,7 +729,7 @@ func SocialTypeNotIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -740,7 +823,7 @@ func SocialPayloadIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -757,7 +840,7 @@ func SocialPayloadNotIn(vs ...string) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -851,7 +934,7 @@ func HeroPlayedIn(vs ...uint) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -868,7 +951,7 @@ func HeroPlayedNotIn(vs ...uint) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -927,7 +1010,7 @@ func HeroRepeatIn(vs ...uint) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -944,7 +1027,7 @@ func HeroRepeatNotIn(vs ...uint) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -1003,7 +1086,7 @@ func CreatedAtIn(vs ...time.Time) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -1020,7 +1103,7 @@ func CreatedAtNotIn(vs ...time.Time) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -1093,7 +1176,7 @@ func UpdatedAtIn(vs ...time.Time) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}
@@ -1110,7 +1193,7 @@ func UpdatedAtNotIn(vs ...time.Time) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
+		if len(vs) == 0 {
 			s.Where(sql.False())
 			return
 		}

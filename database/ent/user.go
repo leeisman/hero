@@ -16,6 +16,8 @@ type User struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
+	// HeroScore holds the value of the "hero_score" field.
+	HeroScore int `json:"hero_score,omitempty"`
 	// SocialUserID holds the value of the "social_user_id" field.
 	SocialUserID string `json:"social_user_id,omitempty"`
 	// SocialAvatarURL holds the value of the "social_avatar_url" field.
@@ -42,6 +44,7 @@ type User struct {
 func (*User) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullString{}, // id
+		&sql.NullInt64{},  // hero_score
 		&sql.NullString{}, // social_user_id
 		&sql.NullString{}, // social_avatar_url
 		&sql.NullString{}, // social_email
@@ -67,53 +70,58 @@ func (u *User) assignValues(values ...interface{}) error {
 		u.ID = value.String
 	}
 	values = values[1:]
-	if value, ok := values[0].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field social_user_id", values[0])
+	if value, ok := values[0].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hero_score", values[0])
+	} else if value.Valid {
+		u.HeroScore = int(value.Int64)
+	}
+	if value, ok := values[1].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field social_user_id", values[1])
 	} else if value.Valid {
 		u.SocialUserID = value.String
 	}
-	if value, ok := values[1].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field social_avatar_url", values[1])
+	if value, ok := values[2].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field social_avatar_url", values[2])
 	} else if value.Valid {
 		u.SocialAvatarURL = value.String
 	}
-	if value, ok := values[2].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field social_email", values[2])
+	if value, ok := values[3].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field social_email", values[3])
 	} else if value.Valid {
 		u.SocialEmail = value.String
 	}
-	if value, ok := values[3].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field social_name", values[3])
+	if value, ok := values[4].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field social_name", values[4])
 	} else if value.Valid {
 		u.SocialName = value.String
 	}
-	if value, ok := values[4].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field social_type", values[4])
+	if value, ok := values[5].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field social_type", values[5])
 	} else if value.Valid {
 		u.SocialType = value.String
 	}
-	if value, ok := values[5].(*sql.NullString); !ok {
-		return fmt.Errorf("unexpected type %T for field social_payload", values[5])
+	if value, ok := values[6].(*sql.NullString); !ok {
+		return fmt.Errorf("unexpected type %T for field social_payload", values[6])
 	} else if value.Valid {
 		u.SocialPayload = value.String
 	}
-	if value, ok := values[6].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hero_played", values[6])
+	if value, ok := values[7].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hero_played", values[7])
 	} else if value.Valid {
 		u.HeroPlayed = uint(value.Int64)
 	}
-	if value, ok := values[7].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hero_repeat", values[7])
+	if value, ok := values[8].(*sql.NullInt64); !ok {
+		return fmt.Errorf("unexpected type %T for field hero_repeat", values[8])
 	} else if value.Valid {
 		u.HeroRepeat = uint(value.Int64)
 	}
-	if value, ok := values[8].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field created_at", values[8])
+	if value, ok := values[9].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field created_at", values[9])
 	} else if value.Valid {
 		u.CreatedAt = value.Time
 	}
-	if value, ok := values[9].(*sql.NullTime); !ok {
-		return fmt.Errorf("unexpected type %T for field updated_at", values[9])
+	if value, ok := values[10].(*sql.NullTime); !ok {
+		return fmt.Errorf("unexpected type %T for field updated_at", values[10])
 	} else if value.Valid {
 		u.UpdatedAt = value.Time
 	}
@@ -143,6 +151,8 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
+	builder.WriteString(", hero_score=")
+	builder.WriteString(fmt.Sprintf("%v", u.HeroScore))
 	builder.WriteString(", social_user_id=")
 	builder.WriteString(u.SocialUserID)
 	builder.WriteString(", social_avatar_url=")

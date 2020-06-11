@@ -28,6 +28,19 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
+// SetHeroScore sets the hero_score field.
+func (uu *UserUpdate) SetHeroScore(i int) *UserUpdate {
+	uu.mutation.ResetHeroScore()
+	uu.mutation.SetHeroScore(i)
+	return uu
+}
+
+// AddHeroScore adds i to hero_score.
+func (uu *UserUpdate) AddHeroScore(i int) *UserUpdate {
+	uu.mutation.AddHeroScore(i)
+	return uu
+}
+
 // SetSocialUserID sets the social_user_id field.
 func (uu *UserUpdate) SetSocialUserID(s string) *UserUpdate {
 	uu.mutation.SetSocialUserID(s)
@@ -263,6 +276,20 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := uu.mutation.HeroScore(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldHeroScore,
+		})
+	}
+	if value, ok := uu.mutation.AddedHeroScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldHeroScore,
+		})
+	}
 	if value, ok := uu.mutation.SocialUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -375,6 +402,19 @@ type UserUpdateOne struct {
 	config
 	hooks    []Hook
 	mutation *UserMutation
+}
+
+// SetHeroScore sets the hero_score field.
+func (uuo *UserUpdateOne) SetHeroScore(i int) *UserUpdateOne {
+	uuo.mutation.ResetHeroScore()
+	uuo.mutation.SetHeroScore(i)
+	return uuo
+}
+
+// AddHeroScore adds i to hero_score.
+func (uuo *UserUpdateOne) AddHeroScore(i int) *UserUpdateOne {
+	uuo.mutation.AddHeroScore(i)
+	return uuo
 }
 
 // SetSocialUserID sets the social_user_id field.
@@ -610,6 +650,20 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 		return nil, fmt.Errorf("missing User.ID for update")
 	}
 	_spec.Node.ID.Value = id
+	if value, ok := uuo.mutation.HeroScore(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldHeroScore,
+		})
+	}
+	if value, ok := uuo.mutation.AddedHeroScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldHeroScore,
+		})
+	}
 	if value, ok := uuo.mutation.SocialUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,

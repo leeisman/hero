@@ -14,6 +14,7 @@ var (
 
 func Execute() {
 	commander.AddCommand(Server)
+	commander.AddCommand(Seeder)
 	if err := commander.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

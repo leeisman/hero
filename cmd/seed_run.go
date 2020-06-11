@@ -1,7 +1,15 @@
 package cmd
 
-import "hero/database/seeds"
+import (
+	"github.com/spf13/cobra"
+	"hero/database/seeds"
+)
 
-func SeedRun() {
-	seeds.ActiveSeed()
+var Seeder = &cobra.Command{
+	Use:          "seed run",
+	SilenceUsage: true,
+	Short:        "run seed",
+	Run: func(cmd *cobra.Command, args []string) {
+		seeds.ActiveSeed()
+	},
 }

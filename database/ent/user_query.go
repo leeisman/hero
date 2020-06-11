@@ -237,12 +237,12 @@ func (uq *UserQuery) Clone() *UserQuery {
 // Example:
 //
 //	var v []struct {
-//		SocialUserID string `json:"social_user_id,omitempty"`
+//		HeroScore int `json:"hero_score,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		GroupBy(user.FieldSocialUserID).
+//		GroupBy(user.FieldHeroScore).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -263,11 +263,11 @@ func (uq *UserQuery) GroupBy(field string, fields ...string) *UserGroupBy {
 // Example:
 //
 //	var v []struct {
-//		SocialUserID string `json:"social_user_id,omitempty"`
+//		HeroScore int `json:"hero_score,omitempty"`
 //	}
 //
 //	client.User.Query().
-//		Select(user.FieldSocialUserID).
+//		Select(user.FieldHeroScore).
 //		Scan(ctx, &v)
 //
 func (uq *UserQuery) Select(field string, fields ...string) *UserSelect {
