@@ -28,7 +28,7 @@ func ActiveSeed() {
 		FbName:      "frankie",
 	}
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", "http://127.0.0.1:9000/api/active/hero/play", nil)
+	req, err := http.NewRequest("POST", "https://hero-lxaqvhvivq-an.a.run.app/api/active/hero/play", nil)
 	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
 	if err != nil {
 		return

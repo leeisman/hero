@@ -52,7 +52,7 @@ func Run() {
 			h := md5.New()
 			h.Write([]byte(body.FbUserID))
 			md5Key := hex.EncodeToString(h.Sum(nil))
-			logger.Print(c.Request().URL, "KeyAuth", requestID, body.FbUserID, key, md5Key)
+			logger.Print(c.Request().URL, "KeyAuth", requestID, body.FbUserID, key, md5Key, key == md5Key)
 			return key == md5Key, nil
 		}))
 	}
