@@ -27,7 +27,7 @@ func Client() *ent.Client {
 	dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s", dbUser, dbPwd, instanceConnectionName, dbName)
 
 	if configs.EnvPath != "local" {
-		dataSourceName = dbURI
+		dataSourceName = dbURI + "?parseTime=true"
 	}
 
 	db, err := sql.Open("mysql", dataSourceName)

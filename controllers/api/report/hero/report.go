@@ -5,8 +5,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"hero/controllers"
 	"hero/enums"
+	"hero/pkg/logger"
 	"hero/repositories/user"
 	"hero/repositories/user_active_record"
+	"strconv"
 	"time"
 )
 
@@ -37,18 +39,14 @@ type ScoreCountRequest struct {
 }
 
 func UserCount(c echo.Context) error {
+
 	ctx := context.Background()
-	request := &UserCountRequest{}
-	err := c.Bind(request)
-	if err != nil {
-		return controllers.ResponseFail(err, c)
-	}
 	//轉換時間
-	startT, err := time.Parse(TimeLayout, request.StartAt)
+	startT, err := time.Parse(TimeLayout, c.QueryParam("start_at"))
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	endT, err := time.Parse(TimeLayout, request.EndAt)
+	endT, err := time.Parse(TimeLayout, c.QueryParam("end_at"))
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
@@ -118,6 +116,10 @@ func ScoreCount(c echo.Context) error {
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	scoreCount := user_active_record.CountScore(ctx, request.Score, request.StartAt, request.EndAt)
+	score, err := strconv.ParseInt(c.QueryParam("score"), 10, 32)
+	if err != nil {
+		logger.Print("ScoreCount", "err", err.Error())
+	}
+	scoreCount := user_active_record.CountScore(ctx, int(score), c.QueryParam("start_at"), c.QueryParam("end_at"))
 	return controllers.ResponseSuccess(scoreCount, c)
 }
