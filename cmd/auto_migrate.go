@@ -13,7 +13,7 @@ func AutoMigrate() {
 	defer client.Close()
 	ctx := context.Background()
 	// Run migration.
-	err := client.Schema.Create(
+	err := client.Debug().Schema.Create(
 		ctx,
 		migrate.WithDropIndex(true),
 		migrate.WithDropColumn(true),

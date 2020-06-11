@@ -1,2 +1,2 @@
-mysql_url: "root:xc9vgALCgDhgcOKt@tcp(35.184.194.67:3306)/hero_dev?parseTime=true"
-redis_url: "10.90.6.99:6379"
+mysql_url: "root:xc9vgALCgDhgcOKt@tcp(35.234.27.103:3306)/hero_dev?parseTime=true"
+redis_url: "10.239.248.203:6379"

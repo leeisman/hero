@@ -6,7 +6,7 @@ import (
 
 func main() {
 	//建立table
-	//cmd.AutoMigrate()
+	cmd.AutoMigrate()
 	//command初始
 	cmd.Execute()
 }
