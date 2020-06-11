@@ -58,7 +58,7 @@ func Client() *ent.Client {
 	db2.SetMaxOpenConns(1)
 	db2.SetConnMaxLifetime(time.Hour)
 	defaultDB = db2
-	return ent.NewClient(ent.Driver(drv))
+	return ent.NewClient(ent.Driver(drv)).Debug()
 }
 
 func DB() *sql.DB {
