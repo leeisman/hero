@@ -3,11 +3,13 @@ package seeds
 import (
 	"bytes"
 	"encoding/json"
+	"hero/pkg/logger"
 	"hero/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
+	"sync"
+	"time"
 )
 
 type PlayRequest struct {
@@ -17,40 +19,51 @@ type PlayRequest struct {
 	FbName      string `json:"fb_name" form:"fb_name" query:"fb_name"`
 }
 
-func ActiveSeed() {
-	fbUserIDPrefix := 999999999
+const TIME_LAYOUT = "2006-01-02 15:04:05"
 
+func ActiveSeed() {
+	var wg sync.WaitGroup
+	for i := 0; i <= 60; i++ {
+		wg.Add(1)
+		unixTimeUTC := time.Now()                             //gives unix time stamp in utc
+		unitTimeInRFC3339 := unixTimeUTC.Format(time.RFC3339) // converts utc time to RFC3339 format
+		go activeSeed(unitTimeInRFC3339, wg)
+	}
+	wg.Wait()
+}
+
+func activeSeed(fbID string, wg sync.WaitGroup) {
+	defer wg.Done()
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", "https://hero-lxaqvhvivq-an.a.run.app/api/active/hero/play", nil)
-	//req, err := http.NewRequest("POST", "http://127.0.0.1:9000/api/active/hero/play", nil)
+	//req, err := http.NewRequest("POST", "https://hero-lxaqvhvivq-an.a.run.app/api/active/hero/play", nil)
+	req, err := http.NewRequest("POST", "http://127.0.0.1:9000/api/active/hero/play", nil)
 	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
 	if err != nil {
 		return
 	}
-
-	for i := 0; i <= 1; i++ {
-		fbID := fbUserIDPrefix + i
-		fbUserID := strconv.Itoa(fbID)
-		playRequest := &PlayRequest{
-			FbUserID:    fbUserID,
-			FBAvatarUrl: "http://localhost.hero.com/123",
-			FbEmail:     "frankie.lee.job@gmail.com",
-			FbName:      "frankie",
-		}
-		jsonStr, err := json.Marshal(playRequest)
-		if err != nil {
-			log.Print("marshal err: ", err.Error())
-		}
-		b := bytes.NewBuffer(jsonStr)
-		req.Body = ioutil.NopCloser(b)
-		fbIDStr := strconv.Itoa(fbID)
-		playRequest.FbUserID = fbIDStr
-		md5Key := utils.GenMd5Key(fbIDStr)
-		req.Header.Add("Authorization", "Bearer "+md5Key)
-		apiResp, _ := client.Do(req)
-		log.Print("seed play record:", apiResp.Status)
-		if apiResp.Body != nil {
-			apiResp.Body.Close()
-		}
+	playRequest := &PlayRequest{
+		FbUserID:    fbID,
+		FBAvatarUrl: "http://localhost.hero.com/123",
+		FbEmail:     "frankie.lee.job@gmail.com",
+		FbName:      "frankie",
+	}
+	jsonStr, err := json.Marshal(playRequest)
+	if err != nil {
+		log.Print("marshal err: ", err.Error())
+		return
+	}
+	b := bytes.NewBuffer(jsonStr)
+	req.Body = ioutil.NopCloser(b)
+	md5Key := utils.GenMd5Key(fbID)
+	req.Header.Add("Authorization", "Bearer "+md5Key)
+	apiResp, err := client.Do(req)
+	if err != nil {
+		logger.Print("test err", err.Error())
+		return
+	}
+	log.Print("seed play record:", apiResp.Status)
+	if apiResp.Body != nil {
+		apiResp.Body.Close()
+		return
 	}
 }
