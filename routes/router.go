@@ -2,13 +2,12 @@ package routes
 
 import (
 	"bytes"
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"hero/configs"
 	"hero/pkg/logger"
+	"hero/utils"
 	"io/ioutil"
 	"os"
 )
@@ -22,7 +21,7 @@ func Run() {
 	e.Use(middleware.CORS())
 	e.Use(middleware.RequestID())
 
-	if configs.EnvPath != "local" {
+	if true {
 		e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
 			requestID := c.Response().Header().Get(echo.HeaderXRequestID)
 			logger.Print(c.Request().URL, "BodyDump reqBody", requestID, string(reqBody))
@@ -49,9 +48,7 @@ func Run() {
 				c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(reqBody)) // Reset
 			}
 
-			h := md5.New()
-			h.Write([]byte(body.FbUserID))
-			md5Key := hex.EncodeToString(h.Sum(nil))
+			md5Key := utils.GenMd5Key(body.FbUserID)
 			logger.Print(c.Request().URL, "KeyAuth", requestID, body.FbUserID, key, md5Key, key == md5Key)
 			return key == md5Key, nil
 		}))

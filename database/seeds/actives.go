@@ -2,10 +2,9 @@ package seeds
 
 import (
 	"bytes"
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"hero/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -28,13 +27,14 @@ func ActiveSeed() {
 		FbName:      "frankie",
 	}
 	client := &http.Client{}
-	req, err := http.NewRequest("POST", "https://hero-lxaqvhvivq-an.a.run.app/api/active/hero/play", nil)
+	//req, err := http.NewRequest("POST", "https://hero-lxaqvhvivq-an.a.run.app/api/active/hero/play", nil)
+	req, err := http.NewRequest("POST", "http://127.0.0.1:9000/api/active/hero/play", nil)
 	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
 	if err != nil {
 		return
 	}
 
-	for i := 0; i <= 3000; i++ {
+	for i := 0; i <= 100; i++ {
 		jsonStr, err := json.Marshal(playRequest)
 		if err != nil {
 			log.Print("marshal err: ", err.Error())
@@ -44,9 +44,7 @@ func ActiveSeed() {
 		fbID := fbUserIDPrefix + i
 		fbIDStr := strconv.Itoa(fbID)
 		playRequest.FbUserID = fbIDStr
-		h := md5.New()
-		h.Write([]byte(playRequest.FbUserID))
-		md5Key := hex.EncodeToString(h.Sum(nil))
+		md5Key := utils.GenMd5Key(fbIDStr)
 		req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", md5Key))
 		apiResp, _ := client.Do(req)
 		log.Print("seed play record:", apiResp)
