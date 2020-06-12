@@ -9,7 +9,6 @@ import (
 	"hero/pkg/logger"
 	"hero/utils"
 	"io/ioutil"
-	"net/http"
 	"os"
 )
 
@@ -21,20 +20,6 @@ func Run() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 	e.Use(middleware.RequestID())
-
-	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			// Extract the credentials from HTTP request header and perform a security
-			// check\
-			requestID := c.Response().Header().Get(echo.HeaderXRequestID)
-			logger.Print("echo error", requestID)
-			// For invalid credentials
-			return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
-
-			// For valid credentials call next
-			// return next(c)
-		}
-	})
 
 	if true {
 		e.Use(middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
