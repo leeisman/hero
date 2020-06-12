@@ -43,6 +43,7 @@ func Run() {
 				reqBody, _ := ioutil.ReadAll(c.Request().Body)
 				err := json.Unmarshal(reqBody, body)
 				if err != nil {
+					logger.Print("KeyAuth", "err", err.Error())
 					return false, nil
 				}
 				c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(reqBody)) // Reset
