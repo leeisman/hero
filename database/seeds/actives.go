@@ -3,13 +3,13 @@ package seeds
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/rs/xid"
 	"hero/pkg/logger"
 	"hero/utils"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"sync"
-	"time"
 )
 
 type PlayRequest struct {
@@ -23,11 +23,10 @@ const TIME_LAYOUT = "2006-01-02 15:04:05"
 
 func ActiveSeed() {
 	var wg sync.WaitGroup
-	for i := 0; i <= 60; i++ {
+	for i := 0; i <= 70; i++ {
 		wg.Add(1)
-		unixTimeUTC := time.Now()                             //gives unix time stamp in utc
-		unitTimeInRFC3339 := unixTimeUTC.Format(time.RFC3339) // converts utc time to RFC3339 format
-		go activeSeed(unitTimeInRFC3339, wg)
+		xid := xid.New()
+		go activeSeed(xid.String(), wg)
 	}
 	wg.Wait()
 }
