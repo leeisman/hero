@@ -23,7 +23,7 @@ const TIME_LAYOUT = "2006-01-02 15:04:05"
 
 func ActiveSeed() {
 	var wg sync.WaitGroup
-	for i := 0; i <= 70; i++ {
+	for i := 0; i <= 10000; i++ {
 		wg.Add(1)
 		xid := xid.New()
 		go activeSeed(xid.String(), wg)
