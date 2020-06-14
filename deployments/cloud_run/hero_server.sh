@@ -4,9 +4,9 @@
 gcloud run deploy "${SERVICE_NAME}" \
       --image "${IMAGE}" \
       --allow-unauthenticated \
-      --cpu 1000m \
-      --memory 128Mi \
-      --max-instances 1 \
+      --cpu 2000m \
+      --memory 1024Mi \
+      --max-instances 13 \
       --platform managed \
       --region  asia-northeast1\
       --project "${PROJECT_NAME}" \

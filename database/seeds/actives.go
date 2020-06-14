@@ -13,6 +13,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sync"
+	"time"
 )
 
 type PlayRequest struct {
@@ -24,15 +25,18 @@ type PlayRequest struct {
 
 const TIME_LAYOUT = "2006-01-02 15:04:05"
 
-//const HOST = "https://hero-lxaqvhvivq-an.a.run.app"
-const HOST = "http://127.0.0.1:9000"
+const HOST = "https://hero-lxaqvhvivq-an.a.run.app"
+
+//const HOST = "http://127.0.0.1:9000"
 
 func ActiveSeed() {
+	logger.Print("seed to ", HOST)
 	var wg sync.WaitGroup
-	for i := 0; i <= 100; i++ {
+	for i := 0; i <= 5000; i++ {
 		wg.Add(1)
 		xid := xid.New()
 		go activeSeed(xid.String(), &wg)
+		time.Sleep(time.Millisecond * 50)
 	}
 	wg.Wait()
 }
@@ -87,7 +91,7 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 		recordReqeust := &hero.RecordRequest{
 			FbUserID: fbID,
 			RecordID: playResp.Data.ID,
-			Score:    rand.Intn(100),
+			Score:    rand.Intn(300),
 		}
 
 		jsonStr, err := json.Marshal(recordReqeust)

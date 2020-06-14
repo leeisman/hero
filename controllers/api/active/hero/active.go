@@ -117,10 +117,10 @@ func Record(c echo.Context) error {
 		return controllers.ResponseFail(fmt.Errorf("already finished"), c)
 	}
 	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
-	repeatStatus := user.HeroRepeat
 	if user == nil {
 		return controllers.ResponseFail(fmt.Errorf("User no found: %s", request.FbUserID), c)
 	}
+	repeatStatus := user.HeroRepeat
 	if userActiveRecord.UserID != user.ID {
 		return controllers.ResponseFail(fmt.Errorf("Record no match user: %s", request.FbUserID), c)
 	}
