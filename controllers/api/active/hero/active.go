@@ -101,6 +101,9 @@ func Play(c echo.Context) error {
 func Record(c echo.Context) error {
 	ctx := context.Background()
 	client, err := mysql.Client().Tx(ctx)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
 	request := &RecordRequest{}
 	err = c.Bind(request)
 	if err != nil {
