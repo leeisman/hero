@@ -27,6 +27,19 @@ type UserCountResponse struct {
 	Node                map[string]string `json:"node"`
 }
 
+type RankResponse struct {
+	Rank []*subRankResponse `json:"rank"`
+}
+
+type subRankResponse struct {
+	LatestHeroScore int     `json:"latest_hero_score"`
+	BetterHeroScore int     `json:"better_hero_score"`
+	SocialName      string  `json:"social_name"`
+	SocialEmail     string  `json:"social_email"`
+	SocialAvatarURL string  `json:"social_avatar_url"`
+	Percentage      float32 `json:"percentage"`
+}
+
 func UserCount(c echo.Context) error {
 
 	ctx := context.Background()
@@ -110,9 +123,27 @@ func ScoreCount(c echo.Context) error {
 
 func Rank(c echo.Context) error {
 	ctx := context.Background()
-	users, err := user.FindByRankBetterHeroScore(ctx, 10)
+	userTotal, err := user.Count(ctx)
+	floatUserTotal := float32(userTotal)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	return controllers.ResponseSuccess(users, c)
+	users, err := user.FindByRankBetterHeroScore(ctx, 10)
+	rankResp := make([]*subRankResponse, 0)
+	for index, rankUser := range users {
+		percentage := (floatUserTotal - (float32(index + 1))) / floatUserTotal * 100
+		subRankResponse := &subRankResponse{
+			LatestHeroScore: rankUser.LatestHeroScore,
+			BetterHeroScore: rankUser.BetterHeroScore,
+			SocialName:      rankUser.SocialName,
+			SocialEmail:     rankUser.SocialEmail,
+			SocialAvatarURL: rankUser.SocialAvatarURL,
+			Percentage:      percentage,
+		}
+		rankResp = append(rankResp, subRankResponse)
+	}
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
+	return controllers.ResponseSuccess(rankResp, c)
 }

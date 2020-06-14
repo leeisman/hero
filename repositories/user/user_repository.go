@@ -72,3 +72,7 @@ func Create(ctx context.Context, client *ent.Tx, user *ent.User) (*ent.User, err
 		SetUpdatedAt(user.UpdatedAt).
 		Save(ctx)
 }
+
+func Count(ctx context.Context) (int, error) {
+	return mysql.Client().User.Query().Count(ctx)
+}
