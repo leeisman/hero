@@ -14,11 +14,6 @@ import (
 
 const TimeLayout = "2006-01-02 15:04:05"
 
-type UserCountRequest struct {
-	StartAt string `json:"start_at"`
-	EndAt   string `json:"end_at"`
-}
-
 type UserCountResponse struct {
 	FinishedUserCount   int               `json:"finished_user_count"`
 	RepeatUserCount     int               `json:"repeat_user_count"`
@@ -30,12 +25,6 @@ type UserCountResponse struct {
 	StartAt             time.Time         `json:"start_at"`
 	EndAt               time.Time         `json:"end_at"`
 	Node                map[string]string `json:"node"`
-}
-
-type ScoreCountRequest struct {
-	Score   int    `json:"score"`
-	StartAt string `json:"start_at"`
-	EndAt   string `json:"end_at"`
 }
 
 func UserCount(c echo.Context) error {
@@ -111,15 +100,19 @@ func UserCount(c echo.Context) error {
 
 func ScoreCount(c echo.Context) error {
 	ctx := context.Background()
-	request := &ScoreCountRequest{}
-	err := c.Bind(request)
-	if err != nil {
-		return controllers.ResponseFail(err, c)
-	}
 	score, err := strconv.ParseInt(c.QueryParam("score"), 10, 32)
 	if err != nil {
 		logger.Print("ScoreCount", "err", err.Error())
 	}
 	scoreCount := user_active_record.CountScore(ctx, int(score), c.QueryParam("start_at"), c.QueryParam("end_at"))
 	return controllers.ResponseSuccess(scoreCount, c)
+}
+
+func Rank(c echo.Context) error {
+	ctx := context.Background()
+	users, err := user.FindByRankHeroScore(ctx, 10)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
+	return controllers.ResponseSuccess(users, c)
 }

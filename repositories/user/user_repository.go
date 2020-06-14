@@ -8,14 +8,20 @@ import (
 	"time"
 )
 
-func FindBySocialUserID(ctx context.Context, socialUserID string) (*ent.User, error) {
-	return mysql.Client().User.Query().
+func FindBySocialUserID(ctx context.Context, client *ent.Tx, socialUserID string) (*ent.User, error) {
+	return client.User.Query().
 		Where(
 			tableUser.And(
 				tableUser.SocialUserIDEqualFold(socialUserID),
 			),
 		).
 		First(ctx)
+}
+
+func FindByRankHeroScore(ctx context.Context, limit int) ([]*ent.User, error) {
+	return mysql.Client().User.Query().Order(
+		ent.Desc("hero_score"),
+	).Limit(limit).All(ctx)
 }
 
 func CountRepeatUser(ctx context.Context, repeatStatus uint, startAt, endAt time.Time) (int, error) {
@@ -41,8 +47,8 @@ func CountUnFinishedUser(ctx context.Context, startAt, endAt time.Time) (int, er
 		).Count(ctx)
 }
 
-func Create(ctx context.Context, user *ent.User) (*ent.User, error) {
-	return mysql.Client().User.Create().
+func Create(ctx context.Context, client *ent.Tx, user *ent.User) (*ent.User, error) {
+	return client.User.Create().
 		SetID(user.ID).
 		SetSocialType(user.SocialType).
 		SetSocialUserID(user.SocialUserID).

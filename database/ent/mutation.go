@@ -30,26 +30,28 @@ const (
 // nodes in the graph.
 type UserMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *string
-	hero_score        *int
-	addhero_score     *int
-	social_user_id    *string
-	social_avatar_url *string
-	social_email      *string
-	social_name       *string
-	social_type       *string
-	social_payload    *string
-	hero_played       *uint
-	addhero_played    *uint
-	hero_repeat       *uint
-	addhero_repeat    *uint
-	created_at        *time.Time
-	updated_at        *time.Time
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*User, error)
+	op                   Op
+	typ                  string
+	id                   *string
+	hero_score           *int
+	addhero_score        *int
+	better_hero_score    *int
+	addbetter_hero_score *int
+	social_user_id       *string
+	social_avatar_url    *string
+	social_email         *string
+	social_name          *string
+	social_type          *string
+	social_payload       *string
+	hero_played          *uint
+	addhero_played       *uint
+	hero_repeat          *uint
+	addhero_repeat       *uint
+	created_at           *time.Time
+	updated_at           *time.Time
+	clearedFields        map[string]struct{}
+	done                 bool
+	oldValue             func(context.Context) (*User, error)
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -192,6 +194,63 @@ func (m *UserMutation) AddedHeroScore() (r int, exists bool) {
 func (m *UserMutation) ResetHeroScore() {
 	m.hero_score = nil
 	m.addhero_score = nil
+}
+
+// SetBetterHeroScore sets the better_hero_score field.
+func (m *UserMutation) SetBetterHeroScore(i int) {
+	m.better_hero_score = &i
+	m.addbetter_hero_score = nil
+}
+
+// BetterHeroScore returns the better_hero_score value in the mutation.
+func (m *UserMutation) BetterHeroScore() (r int, exists bool) {
+	v := m.better_hero_score
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBetterHeroScore returns the old better_hero_score value of the User.
+// If the User object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *UserMutation) OldBetterHeroScore(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldBetterHeroScore is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldBetterHeroScore requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBetterHeroScore: %w", err)
+	}
+	return oldValue.BetterHeroScore, nil
+}
+
+// AddBetterHeroScore adds i to better_hero_score.
+func (m *UserMutation) AddBetterHeroScore(i int) {
+	if m.addbetter_hero_score != nil {
+		*m.addbetter_hero_score += i
+	} else {
+		m.addbetter_hero_score = &i
+	}
+}
+
+// AddedBetterHeroScore returns the value that was added to the better_hero_score field in this mutation.
+func (m *UserMutation) AddedBetterHeroScore() (r int, exists bool) {
+	v := m.addbetter_hero_score
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBetterHeroScore reset all changes of the "better_hero_score" field.
+func (m *UserMutation) ResetBetterHeroScore() {
+	m.better_hero_score = nil
+	m.addbetter_hero_score = nil
 }
 
 // SetSocialUserID sets the social_user_id field.
@@ -644,9 +703,12 @@ func (m *UserMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.hero_score != nil {
 		fields = append(fields, user.FieldHeroScore)
+	}
+	if m.better_hero_score != nil {
+		fields = append(fields, user.FieldBetterHeroScore)
 	}
 	if m.social_user_id != nil {
 		fields = append(fields, user.FieldSocialUserID)
@@ -688,6 +750,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case user.FieldHeroScore:
 		return m.HeroScore()
+	case user.FieldBetterHeroScore:
+		return m.BetterHeroScore()
 	case user.FieldSocialUserID:
 		return m.SocialUserID()
 	case user.FieldSocialAvatarURL:
@@ -719,6 +783,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 	switch name {
 	case user.FieldHeroScore:
 		return m.OldHeroScore(ctx)
+	case user.FieldBetterHeroScore:
+		return m.OldBetterHeroScore(ctx)
 	case user.FieldSocialUserID:
 		return m.OldSocialUserID(ctx)
 	case user.FieldSocialAvatarURL:
@@ -754,6 +820,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHeroScore(v)
+		return nil
+	case user.FieldBetterHeroScore:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBetterHeroScore(v)
 		return nil
 	case user.FieldSocialUserID:
 		v, ok := value.(string)
@@ -836,6 +909,9 @@ func (m *UserMutation) AddedFields() []string {
 	if m.addhero_score != nil {
 		fields = append(fields, user.FieldHeroScore)
 	}
+	if m.addbetter_hero_score != nil {
+		fields = append(fields, user.FieldBetterHeroScore)
+	}
 	if m.addhero_played != nil {
 		fields = append(fields, user.FieldHeroPlayed)
 	}
@@ -852,6 +928,8 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case user.FieldHeroScore:
 		return m.AddedHeroScore()
+	case user.FieldBetterHeroScore:
+		return m.AddedBetterHeroScore()
 	case user.FieldHeroPlayed:
 		return m.AddedHeroPlayed()
 	case user.FieldHeroRepeat:
@@ -871,6 +949,13 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddHeroScore(v)
+		return nil
+	case user.FieldBetterHeroScore:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBetterHeroScore(v)
 		return nil
 	case user.FieldHeroPlayed:
 		v, ok := value.(uint)
@@ -931,6 +1016,9 @@ func (m *UserMutation) ResetField(name string) error {
 	switch name {
 	case user.FieldHeroScore:
 		m.ResetHeroScore()
+		return nil
+	case user.FieldBetterHeroScore:
+		m.ResetBetterHeroScore()
 		return nil
 	case user.FieldSocialUserID:
 		m.ResetSocialUserID()

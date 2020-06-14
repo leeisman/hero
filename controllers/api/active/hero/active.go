@@ -8,6 +8,7 @@ import (
 	"hero/controllers"
 	"hero/database/ent"
 	"hero/enums"
+	"hero/pkg/db/mysql"
 	"hero/pkg/db/redis"
 	"hero/pkg/logger"
 	userRepository "hero/repositories/user"
@@ -36,14 +37,18 @@ type TrackingRequest struct {
 
 func Play(c echo.Context) error {
 	ctx := context.Background()
+	client, err := mysql.Client().Tx(ctx)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
 	request := &PlayRequest{}
 	now := time.Now().UTC()
-	err := c.Bind(request)
+	err = c.Bind(request)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
 	//找不到user也會當err,故不處理err
-	user, err := userRepository.FindBySocialUserID(ctx, request.FbUserID)
+	user, err := userRepository.FindBySocialUserID(ctx, client, request.FbUserID)
 	if user == nil {
 		logger.Printf("not found user id ", request.FbUserID)
 		if err != nil {
@@ -51,7 +56,7 @@ func Play(c echo.Context) error {
 		}
 		newXID := xid.New()
 		id := "UR_" + newXID.String()
-		user, err = userRepository.Create(ctx, &ent.User{
+		user, err = userRepository.Create(ctx, client, &ent.User{
 			ID:              id,
 			SocialUserID:    request.FbUserID,
 			SocialAvatarURL: request.FBAvatarUrl,
@@ -62,6 +67,7 @@ func Play(c echo.Context) error {
 			UpdatedAt:       now,
 		})
 		if err != nil {
+			mysql.Rollback(client, err)
 			return controllers.ResponseFail(err, c)
 		}
 	}
@@ -77,19 +83,26 @@ func Play(c echo.Context) error {
 		UpdatedAt:  &now,
 	})
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	if userActiveRecord == nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("Create user active record fail: %s", request.FbUserID), c)
 	}
 	countFinishedOrUnfinishedUserTotal(ctx, 0)
+	err = client.Commit()
+	if err != nil {
+		logger.Print("play commit err ", err.Error())
+	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
 func Record(c echo.Context) error {
 	ctx := context.Background()
+	client, err := mysql.Client().Tx(ctx)
 	request := &RecordRequest{}
-	err := c.Bind(request)
+	err = c.Bind(request)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
@@ -103,7 +116,7 @@ func Record(c echo.Context) error {
 	if userActiveRecord.EndedAt != nil {
 		return controllers.ResponseFail(fmt.Errorf("already finished"), c)
 	}
-	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
+	user, _ := userRepository.FindBySocialUserID(ctx, client, request.FbUserID)
 	repeatStatus := user.HeroRepeat
 	if user == nil {
 		return controllers.ResponseFail(fmt.Errorf("User no found: %s", request.FbUserID), c)
@@ -115,8 +128,9 @@ func Record(c echo.Context) error {
 	if user.HeroPlayed == 1 {
 		queryBuilder.SetHeroRepeat(1)
 	}
-	queryBuilder.Save(ctx)
+	_, err = queryBuilder.Save(ctx)
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("Change user repeat type err: %s", request.FbUserID), c)
 	}
 	now := time.Now().UTC()
@@ -127,22 +141,40 @@ func Record(c echo.Context) error {
 		SetUpdatedAt(now).
 		Save(ctx)
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
+
+	//更新user score
+	queryBuilder = user.Update().SetHeroScore(request.Score)
+	if request.Score > user.HeroScore {
+		queryBuilder = queryBuilder.SetBetterHeroScore(request.Score)
+	}
+	_, err = queryBuilder.Save(ctx)
+	if err != nil {
+		mysql.Rollback(client, err)
+		return controllers.ResponseFail(err, c)
+	}
+
 	countFinishedOrUnfinishedUserTotal(ctx, 1)
 	countRepeatOrNotRepeatUserTotal(ctx, repeatStatus, user.ID)
+	err = client.Commit()
+	if err != nil {
+		logger.Print("play commit err ", err.Error())
+	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
 func Tracking(c echo.Context) error {
 	ctx := context.Background()
+	client, err := mysql.Client().Tx(ctx)
 	request := &TrackingRequest{}
 	now := time.Now().UTC()
-	err := c.Bind(request)
+	err = c.Bind(request)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	user, err := userRepository.FindBySocialUserID(ctx, request.FbUserID)
+	user, err := userRepository.FindBySocialUserID(ctx, client, request.FbUserID)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
@@ -160,6 +192,10 @@ func Tracking(c echo.Context) error {
 	})
 	if err != nil {
 		return controllers.ResponseFail(err, c)
+	}
+	err = client.Commit()
+	if err != nil {
+		logger.Print("play commit err ", err.Error())
 	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }

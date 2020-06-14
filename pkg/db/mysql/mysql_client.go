@@ -64,3 +64,10 @@ func Client() *ent.Client {
 func DB() *sql.DB {
 	return defaultDB
 }
+
+func Rollback(tx *ent.Tx, err error) {
+	logger.Print("mysql rollback before err", err.Error())
+	if err := tx.Rollback(); err != nil {
+		logger.Print("mysql rollback err", err.Error())
+	}
+}

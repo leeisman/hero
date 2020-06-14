@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"hero/database/ent/user"
 	"time"
@@ -23,6 +22,28 @@ type UserCreate struct {
 // SetHeroScore sets the hero_score field.
 func (uc *UserCreate) SetHeroScore(i int) *UserCreate {
 	uc.mutation.SetHeroScore(i)
+	return uc
+}
+
+// SetNillableHeroScore sets the hero_score field if the given value is not nil.
+func (uc *UserCreate) SetNillableHeroScore(i *int) *UserCreate {
+	if i != nil {
+		uc.SetHeroScore(*i)
+	}
+	return uc
+}
+
+// SetBetterHeroScore sets the better_hero_score field.
+func (uc *UserCreate) SetBetterHeroScore(i int) *UserCreate {
+	uc.mutation.SetBetterHeroScore(i)
+	return uc
+}
+
+// SetNillableBetterHeroScore sets the better_hero_score field if the given value is not nil.
+func (uc *UserCreate) SetNillableBetterHeroScore(i *int) *UserCreate {
+	if i != nil {
+		uc.SetBetterHeroScore(*i)
+	}
 	return uc
 }
 
@@ -175,7 +196,12 @@ func (uc *UserCreate) SetID(s string) *UserCreate {
 // Save creates the User in the database.
 func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
 	if _, ok := uc.mutation.HeroScore(); !ok {
-		return nil, errors.New("ent: missing required field \"hero_score\"")
+		v := user.DefaultHeroScore
+		uc.mutation.SetHeroScore(v)
+	}
+	if _, ok := uc.mutation.BetterHeroScore(); !ok {
+		v := user.DefaultBetterHeroScore
+		uc.mutation.SetBetterHeroScore(v)
 	}
 	if _, ok := uc.mutation.SocialUserID(); !ok {
 		v := user.DefaultSocialUserID
@@ -267,6 +293,14 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Column: user.FieldHeroScore,
 		})
 		u.HeroScore = value
+	}
+	if value, ok := uc.mutation.BetterHeroScore(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldBetterHeroScore,
+		})
+		u.BetterHeroScore = value
 	}
 	if value, ok := uc.mutation.SocialUserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

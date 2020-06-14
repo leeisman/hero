@@ -35,9 +35,38 @@ func (uu *UserUpdate) SetHeroScore(i int) *UserUpdate {
 	return uu
 }
 
+// SetNillableHeroScore sets the hero_score field if the given value is not nil.
+func (uu *UserUpdate) SetNillableHeroScore(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetHeroScore(*i)
+	}
+	return uu
+}
+
 // AddHeroScore adds i to hero_score.
 func (uu *UserUpdate) AddHeroScore(i int) *UserUpdate {
 	uu.mutation.AddHeroScore(i)
+	return uu
+}
+
+// SetBetterHeroScore sets the better_hero_score field.
+func (uu *UserUpdate) SetBetterHeroScore(i int) *UserUpdate {
+	uu.mutation.ResetBetterHeroScore()
+	uu.mutation.SetBetterHeroScore(i)
+	return uu
+}
+
+// SetNillableBetterHeroScore sets the better_hero_score field if the given value is not nil.
+func (uu *UserUpdate) SetNillableBetterHeroScore(i *int) *UserUpdate {
+	if i != nil {
+		uu.SetBetterHeroScore(*i)
+	}
+	return uu
+}
+
+// AddBetterHeroScore adds i to better_hero_score.
+func (uu *UserUpdate) AddBetterHeroScore(i int) *UserUpdate {
+	uu.mutation.AddBetterHeroScore(i)
 	return uu
 }
 
@@ -290,6 +319,20 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldHeroScore,
 		})
 	}
+	if value, ok := uu.mutation.BetterHeroScore(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldBetterHeroScore,
+		})
+	}
+	if value, ok := uu.mutation.AddedBetterHeroScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldBetterHeroScore,
+		})
+	}
 	if value, ok := uu.mutation.SocialUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -411,9 +454,38 @@ func (uuo *UserUpdateOne) SetHeroScore(i int) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableHeroScore sets the hero_score field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableHeroScore(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetHeroScore(*i)
+	}
+	return uuo
+}
+
 // AddHeroScore adds i to hero_score.
 func (uuo *UserUpdateOne) AddHeroScore(i int) *UserUpdateOne {
 	uuo.mutation.AddHeroScore(i)
+	return uuo
+}
+
+// SetBetterHeroScore sets the better_hero_score field.
+func (uuo *UserUpdateOne) SetBetterHeroScore(i int) *UserUpdateOne {
+	uuo.mutation.ResetBetterHeroScore()
+	uuo.mutation.SetBetterHeroScore(i)
+	return uuo
+}
+
+// SetNillableBetterHeroScore sets the better_hero_score field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableBetterHeroScore(i *int) *UserUpdateOne {
+	if i != nil {
+		uuo.SetBetterHeroScore(*i)
+	}
+	return uuo
+}
+
+// AddBetterHeroScore adds i to better_hero_score.
+func (uuo *UserUpdateOne) AddBetterHeroScore(i int) *UserUpdateOne {
+	uuo.mutation.AddBetterHeroScore(i)
 	return uuo
 }
 
@@ -662,6 +734,20 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: user.FieldHeroScore,
+		})
+	}
+	if value, ok := uuo.mutation.BetterHeroScore(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldBetterHeroScore,
+		})
+	}
+	if value, ok := uuo.mutation.AddedBetterHeroScore(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt,
+			Value:  value,
+			Column: user.FieldBetterHeroScore,
 		})
 	}
 	if value, ok := uuo.mutation.SocialUserID(); ok {

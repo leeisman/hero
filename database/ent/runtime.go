@@ -14,36 +14,44 @@ import (
 func init() {
 	userFields := schema.User{}.Fields()
 	_ = userFields
+	// userDescHeroScore is the schema descriptor for hero_score field.
+	userDescHeroScore := userFields[1].Descriptor()
+	// user.DefaultHeroScore holds the default value on creation for the hero_score field.
+	user.DefaultHeroScore = userDescHeroScore.Default.(int)
+	// userDescBetterHeroScore is the schema descriptor for better_hero_score field.
+	userDescBetterHeroScore := userFields[2].Descriptor()
+	// user.DefaultBetterHeroScore holds the default value on creation for the better_hero_score field.
+	user.DefaultBetterHeroScore = userDescBetterHeroScore.Default.(int)
 	// userDescSocialUserID is the schema descriptor for social_user_id field.
-	userDescSocialUserID := userFields[2].Descriptor()
+	userDescSocialUserID := userFields[3].Descriptor()
 	// user.DefaultSocialUserID holds the default value on creation for the social_user_id field.
 	user.DefaultSocialUserID = userDescSocialUserID.Default.(string)
 	// userDescSocialAvatarURL is the schema descriptor for social_avatar_url field.
-	userDescSocialAvatarURL := userFields[3].Descriptor()
+	userDescSocialAvatarURL := userFields[4].Descriptor()
 	// user.DefaultSocialAvatarURL holds the default value on creation for the social_avatar_url field.
 	user.DefaultSocialAvatarURL = userDescSocialAvatarURL.Default.(string)
 	// userDescSocialEmail is the schema descriptor for social_email field.
-	userDescSocialEmail := userFields[4].Descriptor()
+	userDescSocialEmail := userFields[5].Descriptor()
 	// user.DefaultSocialEmail holds the default value on creation for the social_email field.
 	user.DefaultSocialEmail = userDescSocialEmail.Default.(string)
 	// userDescSocialName is the schema descriptor for social_name field.
-	userDescSocialName := userFields[5].Descriptor()
+	userDescSocialName := userFields[6].Descriptor()
 	// user.DefaultSocialName holds the default value on creation for the social_name field.
 	user.DefaultSocialName = userDescSocialName.Default.(string)
 	// userDescSocialType is the schema descriptor for social_type field.
-	userDescSocialType := userFields[6].Descriptor()
+	userDescSocialType := userFields[7].Descriptor()
 	// user.DefaultSocialType holds the default value on creation for the social_type field.
 	user.DefaultSocialType = userDescSocialType.Default.(string)
 	// userDescSocialPayload is the schema descriptor for social_payload field.
-	userDescSocialPayload := userFields[7].Descriptor()
+	userDescSocialPayload := userFields[8].Descriptor()
 	// user.DefaultSocialPayload holds the default value on creation for the social_payload field.
 	user.DefaultSocialPayload = userDescSocialPayload.Default.(string)
 	// userDescHeroPlayed is the schema descriptor for hero_played field.
-	userDescHeroPlayed := userFields[8].Descriptor()
+	userDescHeroPlayed := userFields[9].Descriptor()
 	// user.DefaultHeroPlayed holds the default value on creation for the hero_played field.
 	user.DefaultHeroPlayed = userDescHeroPlayed.Default.(uint)
 	// userDescHeroRepeat is the schema descriptor for hero_repeat field.
-	userDescHeroRepeat := userFields[9].Descriptor()
+	userDescHeroRepeat := userFields[10].Descriptor()
 	// user.DefaultHeroRepeat holds the default value on creation for the hero_repeat field.
 	user.DefaultHeroRepeat = userDescHeroRepeat.Default.(uint)
 	useractiverecordFields := schema.UserActiveRecord{}.Fields()
