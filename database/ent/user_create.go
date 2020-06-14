@@ -19,16 +19,16 @@ type UserCreate struct {
 	hooks    []Hook
 }
 
-// SetHeroScore sets the hero_score field.
-func (uc *UserCreate) SetHeroScore(i int) *UserCreate {
-	uc.mutation.SetHeroScore(i)
+// SetLatestHeroScore sets the latest_hero_score field.
+func (uc *UserCreate) SetLatestHeroScore(i int) *UserCreate {
+	uc.mutation.SetLatestHeroScore(i)
 	return uc
 }
 
-// SetNillableHeroScore sets the hero_score field if the given value is not nil.
-func (uc *UserCreate) SetNillableHeroScore(i *int) *UserCreate {
+// SetNillableLatestHeroScore sets the latest_hero_score field if the given value is not nil.
+func (uc *UserCreate) SetNillableLatestHeroScore(i *int) *UserCreate {
 	if i != nil {
-		uc.SetHeroScore(*i)
+		uc.SetLatestHeroScore(*i)
 	}
 	return uc
 }
@@ -195,9 +195,9 @@ func (uc *UserCreate) SetID(s string) *UserCreate {
 
 // Save creates the User in the database.
 func (uc *UserCreate) Save(ctx context.Context) (*User, error) {
-	if _, ok := uc.mutation.HeroScore(); !ok {
-		v := user.DefaultHeroScore
-		uc.mutation.SetHeroScore(v)
+	if _, ok := uc.mutation.LatestHeroScore(); !ok {
+		v := user.DefaultLatestHeroScore
+		uc.mutation.SetLatestHeroScore(v)
 	}
 	if _, ok := uc.mutation.BetterHeroScore(); !ok {
 		v := user.DefaultBetterHeroScore
@@ -286,13 +286,13 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 		u.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := uc.mutation.HeroScore(); ok {
+	if value, ok := uc.mutation.LatestHeroScore(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldHeroScore,
+			Column: user.FieldLatestHeroScore,
 		})
-		u.HeroScore = value
+		u.LatestHeroScore = value
 	}
 	if value, ok := uc.mutation.BetterHeroScore(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

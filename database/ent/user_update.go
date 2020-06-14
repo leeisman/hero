@@ -28,24 +28,24 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
-// SetHeroScore sets the hero_score field.
-func (uu *UserUpdate) SetHeroScore(i int) *UserUpdate {
-	uu.mutation.ResetHeroScore()
-	uu.mutation.SetHeroScore(i)
+// SetLatestHeroScore sets the latest_hero_score field.
+func (uu *UserUpdate) SetLatestHeroScore(i int) *UserUpdate {
+	uu.mutation.ResetLatestHeroScore()
+	uu.mutation.SetLatestHeroScore(i)
 	return uu
 }
 
-// SetNillableHeroScore sets the hero_score field if the given value is not nil.
-func (uu *UserUpdate) SetNillableHeroScore(i *int) *UserUpdate {
+// SetNillableLatestHeroScore sets the latest_hero_score field if the given value is not nil.
+func (uu *UserUpdate) SetNillableLatestHeroScore(i *int) *UserUpdate {
 	if i != nil {
-		uu.SetHeroScore(*i)
+		uu.SetLatestHeroScore(*i)
 	}
 	return uu
 }
 
-// AddHeroScore adds i to hero_score.
-func (uu *UserUpdate) AddHeroScore(i int) *UserUpdate {
-	uu.mutation.AddHeroScore(i)
+// AddLatestHeroScore adds i to latest_hero_score.
+func (uu *UserUpdate) AddLatestHeroScore(i int) *UserUpdate {
+	uu.mutation.AddLatestHeroScore(i)
 	return uu
 }
 
@@ -305,18 +305,18 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := uu.mutation.HeroScore(); ok {
+	if value, ok := uu.mutation.LatestHeroScore(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldHeroScore,
+			Column: user.FieldLatestHeroScore,
 		})
 	}
-	if value, ok := uu.mutation.AddedHeroScore(); ok {
+	if value, ok := uu.mutation.AddedLatestHeroScore(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldHeroScore,
+			Column: user.FieldLatestHeroScore,
 		})
 	}
 	if value, ok := uu.mutation.BetterHeroScore(); ok {
@@ -447,24 +447,24 @@ type UserUpdateOne struct {
 	mutation *UserMutation
 }
 
-// SetHeroScore sets the hero_score field.
-func (uuo *UserUpdateOne) SetHeroScore(i int) *UserUpdateOne {
-	uuo.mutation.ResetHeroScore()
-	uuo.mutation.SetHeroScore(i)
+// SetLatestHeroScore sets the latest_hero_score field.
+func (uuo *UserUpdateOne) SetLatestHeroScore(i int) *UserUpdateOne {
+	uuo.mutation.ResetLatestHeroScore()
+	uuo.mutation.SetLatestHeroScore(i)
 	return uuo
 }
 
-// SetNillableHeroScore sets the hero_score field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableHeroScore(i *int) *UserUpdateOne {
+// SetNillableLatestHeroScore sets the latest_hero_score field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableLatestHeroScore(i *int) *UserUpdateOne {
 	if i != nil {
-		uuo.SetHeroScore(*i)
+		uuo.SetLatestHeroScore(*i)
 	}
 	return uuo
 }
 
-// AddHeroScore adds i to hero_score.
-func (uuo *UserUpdateOne) AddHeroScore(i int) *UserUpdateOne {
-	uuo.mutation.AddHeroScore(i)
+// AddLatestHeroScore adds i to latest_hero_score.
+func (uuo *UserUpdateOne) AddLatestHeroScore(i int) *UserUpdateOne {
+	uuo.mutation.AddLatestHeroScore(i)
 	return uuo
 }
 
@@ -722,18 +722,18 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 		return nil, fmt.Errorf("missing User.ID for update")
 	}
 	_spec.Node.ID.Value = id
-	if value, ok := uuo.mutation.HeroScore(); ok {
+	if value, ok := uuo.mutation.LatestHeroScore(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldHeroScore,
+			Column: user.FieldLatestHeroScore,
 		})
 	}
-	if value, ok := uuo.mutation.AddedHeroScore(); ok {
+	if value, ok := uuo.mutation.AddedLatestHeroScore(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt,
 			Value:  value,
-			Column: user.FieldHeroScore,
+			Column: user.FieldLatestHeroScore,
 		})
 	}
 	if value, ok := uuo.mutation.BetterHeroScore(); ok {

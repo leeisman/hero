@@ -11,7 +11,7 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
-		{Name: "hero_score", Type: field.TypeInt},
+		{Name: "latest_hero_score", Type: field.TypeInt},
 		{Name: "better_hero_score", Type: field.TypeInt},
 		{Name: "social_user_id", Type: field.TypeString, Default: ""},
 		{Name: "social_avatar_url", Type: field.TypeString, Default: ""},

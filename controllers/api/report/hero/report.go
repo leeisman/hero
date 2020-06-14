@@ -110,7 +110,7 @@ func ScoreCount(c echo.Context) error {
 
 func Rank(c echo.Context) error {
 	ctx := context.Background()
-	users, err := user.FindByRankHeroScore(ctx, 10)
+	users, err := user.FindByRankBetterHeroScore(ctx, 10)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}

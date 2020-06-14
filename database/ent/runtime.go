@@ -14,10 +14,10 @@ import (
 func init() {
 	userFields := schema.User{}.Fields()
 	_ = userFields
-	// userDescHeroScore is the schema descriptor for hero_score field.
-	userDescHeroScore := userFields[1].Descriptor()
-	// user.DefaultHeroScore holds the default value on creation for the hero_score field.
-	user.DefaultHeroScore = userDescHeroScore.Default.(int)
+	// userDescLatestHeroScore is the schema descriptor for latest_hero_score field.
+	userDescLatestHeroScore := userFields[1].Descriptor()
+	// user.DefaultLatestHeroScore holds the default value on creation for the latest_hero_score field.
+	user.DefaultLatestHeroScore = userDescLatestHeroScore.Default.(int)
 	// userDescBetterHeroScore is the schema descriptor for better_hero_score field.
 	userDescBetterHeroScore := userFields[2].Descriptor()
 	// user.DefaultBetterHeroScore holds the default value on creation for the better_hero_score field.

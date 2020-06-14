@@ -16,8 +16,8 @@ type User struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
-	// HeroScore holds the value of the "hero_score" field.
-	HeroScore int `json:"hero_score,omitempty"`
+	// LatestHeroScore holds the value of the "latest_hero_score" field.
+	LatestHeroScore int `json:"latest_hero_score,omitempty"`
 	// BetterHeroScore holds the value of the "better_hero_score" field.
 	BetterHeroScore int `json:"better_hero_score,omitempty"`
 	// SocialUserID holds the value of the "social_user_id" field.
@@ -46,7 +46,7 @@ type User struct {
 func (*User) scanValues() []interface{} {
 	return []interface{}{
 		&sql.NullString{}, // id
-		&sql.NullInt64{},  // hero_score
+		&sql.NullInt64{},  // latest_hero_score
 		&sql.NullInt64{},  // better_hero_score
 		&sql.NullString{}, // social_user_id
 		&sql.NullString{}, // social_avatar_url
@@ -74,9 +74,9 @@ func (u *User) assignValues(values ...interface{}) error {
 	}
 	values = values[1:]
 	if value, ok := values[0].(*sql.NullInt64); !ok {
-		return fmt.Errorf("unexpected type %T for field hero_score", values[0])
+		return fmt.Errorf("unexpected type %T for field latest_hero_score", values[0])
 	} else if value.Valid {
-		u.HeroScore = int(value.Int64)
+		u.LatestHeroScore = int(value.Int64)
 	}
 	if value, ok := values[1].(*sql.NullInt64); !ok {
 		return fmt.Errorf("unexpected type %T for field better_hero_score", values[1])
@@ -159,8 +159,8 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
-	builder.WriteString(", hero_score=")
-	builder.WriteString(fmt.Sprintf("%v", u.HeroScore))
+	builder.WriteString(", latest_hero_score=")
+	builder.WriteString(fmt.Sprintf("%v", u.LatestHeroScore))
 	builder.WriteString(", better_hero_score=")
 	builder.WriteString(fmt.Sprintf("%v", u.BetterHeroScore))
 	builder.WriteString(", social_user_id=")

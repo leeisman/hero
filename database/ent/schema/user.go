@@ -14,7 +14,7 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Comment("pk"),
-		field.Int("hero_score").Default(0),
+		field.Int("latest_hero_score").Default(0),
 		field.Int("better_hero_score").Default(0),
 		field.String("social_user_id").Default(""),
 		field.String("social_avatar_url").Default(""),

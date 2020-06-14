@@ -92,10 +92,10 @@ func IDLTE(id string) predicate.User {
 	})
 }
 
-// HeroScore applies equality check predicate on the "hero_score" field. It's identical to HeroScoreEQ.
-func HeroScore(v int) predicate.User {
+// LatestHeroScore applies equality check predicate on the "latest_hero_score" field. It's identical to LatestHeroScoreEQ.
+func LatestHeroScore(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldHeroScore), v))
+		s.Where(sql.EQ(s.C(FieldLatestHeroScore), v))
 	})
 }
 
@@ -176,22 +176,22 @@ func UpdatedAt(v time.Time) predicate.User {
 	})
 }
 
-// HeroScoreEQ applies the EQ predicate on the "hero_score" field.
-func HeroScoreEQ(v int) predicate.User {
+// LatestHeroScoreEQ applies the EQ predicate on the "latest_hero_score" field.
+func LatestHeroScoreEQ(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldHeroScore), v))
+		s.Where(sql.EQ(s.C(FieldLatestHeroScore), v))
 	})
 }
 
-// HeroScoreNEQ applies the NEQ predicate on the "hero_score" field.
-func HeroScoreNEQ(v int) predicate.User {
+// LatestHeroScoreNEQ applies the NEQ predicate on the "latest_hero_score" field.
+func LatestHeroScoreNEQ(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldHeroScore), v))
+		s.Where(sql.NEQ(s.C(FieldLatestHeroScore), v))
 	})
 }
 
-// HeroScoreIn applies the In predicate on the "hero_score" field.
-func HeroScoreIn(vs ...int) predicate.User {
+// LatestHeroScoreIn applies the In predicate on the "latest_hero_score" field.
+func LatestHeroScoreIn(vs ...int) predicate.User {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -203,12 +203,12 @@ func HeroScoreIn(vs ...int) predicate.User {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.In(s.C(FieldHeroScore), v...))
+		s.Where(sql.In(s.C(FieldLatestHeroScore), v...))
 	})
 }
 
-// HeroScoreNotIn applies the NotIn predicate on the "hero_score" field.
-func HeroScoreNotIn(vs ...int) predicate.User {
+// LatestHeroScoreNotIn applies the NotIn predicate on the "latest_hero_score" field.
+func LatestHeroScoreNotIn(vs ...int) predicate.User {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -220,35 +220,35 @@ func HeroScoreNotIn(vs ...int) predicate.User {
 			s.Where(sql.False())
 			return
 		}
-		s.Where(sql.NotIn(s.C(FieldHeroScore), v...))
+		s.Where(sql.NotIn(s.C(FieldLatestHeroScore), v...))
 	})
 }
 
-// HeroScoreGT applies the GT predicate on the "hero_score" field.
-func HeroScoreGT(v int) predicate.User {
+// LatestHeroScoreGT applies the GT predicate on the "latest_hero_score" field.
+func LatestHeroScoreGT(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldHeroScore), v))
+		s.Where(sql.GT(s.C(FieldLatestHeroScore), v))
 	})
 }
 
-// HeroScoreGTE applies the GTE predicate on the "hero_score" field.
-func HeroScoreGTE(v int) predicate.User {
+// LatestHeroScoreGTE applies the GTE predicate on the "latest_hero_score" field.
+func LatestHeroScoreGTE(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldHeroScore), v))
+		s.Where(sql.GTE(s.C(FieldLatestHeroScore), v))
 	})
 }
 
-// HeroScoreLT applies the LT predicate on the "hero_score" field.
-func HeroScoreLT(v int) predicate.User {
+// LatestHeroScoreLT applies the LT predicate on the "latest_hero_score" field.
+func LatestHeroScoreLT(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldHeroScore), v))
+		s.Where(sql.LT(s.C(FieldLatestHeroScore), v))
 	})
 }
 
-// HeroScoreLTE applies the LTE predicate on the "hero_score" field.
-func HeroScoreLTE(v int) predicate.User {
+// LatestHeroScoreLTE applies the LTE predicate on the "latest_hero_score" field.
+func LatestHeroScoreLTE(v int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldHeroScore), v))
+		s.Where(sql.LTE(s.C(FieldLatestHeroScore), v))
 	})
 }
 

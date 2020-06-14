@@ -18,10 +18,23 @@ func FindBySocialUserID(ctx context.Context, client *ent.Tx, socialUserID string
 		First(ctx)
 }
 
-func FindByRankHeroScore(ctx context.Context, limit int) ([]*ent.User, error) {
-	return mysql.Client().User.Query().Order(
-		ent.Desc("hero_score"),
+func FindByRankBetterHeroScore(ctx context.Context, limit int) ([]*ent.User, error) {
+	users, err := mysql.Client().User.Query().Order(
+		ent.Desc("better_hero_score"),
 	).Limit(limit).All(ctx)
+
+	formatterUsers := make([]*ent.User, 0)
+	for _, user := range users {
+		tempUser := &ent.User{
+			LatestHeroScore: user.LatestHeroScore,
+			BetterHeroScore: user.BetterHeroScore,
+			SocialName:      user.SocialName,
+			SocialEmail:     user.SocialEmail,
+			SocialAvatarURL: user.SocialAvatarURL,
+		}
+		formatterUsers = append(formatterUsers, tempUser)
+	}
+	return formatterUsers, err
 }
 
 func CountRepeatUser(ctx context.Context, repeatStatus uint, startAt, endAt time.Time) (int, error) {
@@ -57,6 +70,5 @@ func Create(ctx context.Context, client *ent.Tx, user *ent.User) (*ent.User, err
 		SetSocialName(user.SocialName).
 		SetCreatedAt(user.CreatedAt).
 		SetUpdatedAt(user.UpdatedAt).
-		SetHeroScore(0).
 		Save(ctx)
 }

@@ -33,8 +33,8 @@ type UserMutation struct {
 	op                   Op
 	typ                  string
 	id                   *string
-	hero_score           *int
-	addhero_score        *int
+	latest_hero_score    *int
+	addlatest_hero_score *int
 	better_hero_score    *int
 	addbetter_hero_score *int
 	social_user_id       *string
@@ -139,61 +139,61 @@ func (m *UserMutation) ID() (id string, exists bool) {
 	return *m.id, true
 }
 
-// SetHeroScore sets the hero_score field.
-func (m *UserMutation) SetHeroScore(i int) {
-	m.hero_score = &i
-	m.addhero_score = nil
+// SetLatestHeroScore sets the latest_hero_score field.
+func (m *UserMutation) SetLatestHeroScore(i int) {
+	m.latest_hero_score = &i
+	m.addlatest_hero_score = nil
 }
 
-// HeroScore returns the hero_score value in the mutation.
-func (m *UserMutation) HeroScore() (r int, exists bool) {
-	v := m.hero_score
+// LatestHeroScore returns the latest_hero_score value in the mutation.
+func (m *UserMutation) LatestHeroScore() (r int, exists bool) {
+	v := m.latest_hero_score
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldHeroScore returns the old hero_score value of the User.
+// OldLatestHeroScore returns the old latest_hero_score value of the User.
 // If the User object wasn't provided to the builder, the object is fetched
 // from the database.
 // An error is returned if the mutation operation is not UpdateOne, or database query fails.
-func (m *UserMutation) OldHeroScore(ctx context.Context) (v int, err error) {
+func (m *UserMutation) OldLatestHeroScore(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldHeroScore is allowed only on UpdateOne operations")
+		return v, fmt.Errorf("OldLatestHeroScore is allowed only on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldHeroScore requires an ID field in the mutation")
+		return v, fmt.Errorf("OldLatestHeroScore requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldHeroScore: %w", err)
+		return v, fmt.Errorf("querying old value for OldLatestHeroScore: %w", err)
 	}
-	return oldValue.HeroScore, nil
+	return oldValue.LatestHeroScore, nil
 }
 
-// AddHeroScore adds i to hero_score.
-func (m *UserMutation) AddHeroScore(i int) {
-	if m.addhero_score != nil {
-		*m.addhero_score += i
+// AddLatestHeroScore adds i to latest_hero_score.
+func (m *UserMutation) AddLatestHeroScore(i int) {
+	if m.addlatest_hero_score != nil {
+		*m.addlatest_hero_score += i
 	} else {
-		m.addhero_score = &i
+		m.addlatest_hero_score = &i
 	}
 }
 
-// AddedHeroScore returns the value that was added to the hero_score field in this mutation.
-func (m *UserMutation) AddedHeroScore() (r int, exists bool) {
-	v := m.addhero_score
+// AddedLatestHeroScore returns the value that was added to the latest_hero_score field in this mutation.
+func (m *UserMutation) AddedLatestHeroScore() (r int, exists bool) {
+	v := m.addlatest_hero_score
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetHeroScore reset all changes of the "hero_score" field.
-func (m *UserMutation) ResetHeroScore() {
-	m.hero_score = nil
-	m.addhero_score = nil
+// ResetLatestHeroScore reset all changes of the "latest_hero_score" field.
+func (m *UserMutation) ResetLatestHeroScore() {
+	m.latest_hero_score = nil
+	m.addlatest_hero_score = nil
 }
 
 // SetBetterHeroScore sets the better_hero_score field.
@@ -704,8 +704,8 @@ func (m *UserMutation) Type() string {
 // fields that were in/decremented, call AddedFields().
 func (m *UserMutation) Fields() []string {
 	fields := make([]string, 0, 12)
-	if m.hero_score != nil {
-		fields = append(fields, user.FieldHeroScore)
+	if m.latest_hero_score != nil {
+		fields = append(fields, user.FieldLatestHeroScore)
 	}
 	if m.better_hero_score != nil {
 		fields = append(fields, user.FieldBetterHeroScore)
@@ -748,8 +748,8 @@ func (m *UserMutation) Fields() []string {
 // not set, or was not define in the schema.
 func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case user.FieldHeroScore:
-		return m.HeroScore()
+	case user.FieldLatestHeroScore:
+		return m.LatestHeroScore()
 	case user.FieldBetterHeroScore:
 		return m.BetterHeroScore()
 	case user.FieldSocialUserID:
@@ -781,8 +781,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // or the query to the database was failed.
 func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case user.FieldHeroScore:
-		return m.OldHeroScore(ctx)
+	case user.FieldLatestHeroScore:
+		return m.OldLatestHeroScore(ctx)
 	case user.FieldBetterHeroScore:
 		return m.OldBetterHeroScore(ctx)
 	case user.FieldSocialUserID:
@@ -814,12 +814,12 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type mismatch the field type.
 func (m *UserMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldHeroScore:
+	case user.FieldLatestHeroScore:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetHeroScore(v)
+		m.SetLatestHeroScore(v)
 		return nil
 	case user.FieldBetterHeroScore:
 		v, ok := value.(int)
@@ -906,8 +906,8 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 // or decremented during this mutation.
 func (m *UserMutation) AddedFields() []string {
 	var fields []string
-	if m.addhero_score != nil {
-		fields = append(fields, user.FieldHeroScore)
+	if m.addlatest_hero_score != nil {
+		fields = append(fields, user.FieldLatestHeroScore)
 	}
 	if m.addbetter_hero_score != nil {
 		fields = append(fields, user.FieldBetterHeroScore)
@@ -926,8 +926,8 @@ func (m *UserMutation) AddedFields() []string {
 // that this field was not set, or was not define in the schema.
 func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case user.FieldHeroScore:
-		return m.AddedHeroScore()
+	case user.FieldLatestHeroScore:
+		return m.AddedLatestHeroScore()
 	case user.FieldBetterHeroScore:
 		return m.AddedBetterHeroScore()
 	case user.FieldHeroPlayed:
@@ -943,12 +943,12 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 // type mismatch the field type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldHeroScore:
+	case user.FieldLatestHeroScore:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddHeroScore(v)
+		m.AddLatestHeroScore(v)
 		return nil
 	case user.FieldBetterHeroScore:
 		v, ok := value.(int)
@@ -1014,8 +1014,8 @@ func (m *UserMutation) ClearField(name string) error {
 // defined in the schema.
 func (m *UserMutation) ResetField(name string) error {
 	switch name {
-	case user.FieldHeroScore:
-		m.ResetHeroScore()
+	case user.FieldLatestHeroScore:
+		m.ResetLatestHeroScore()
 		return nil
 	case user.FieldBetterHeroScore:
 		m.ResetBetterHeroScore()

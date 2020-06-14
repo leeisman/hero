@@ -7,8 +7,8 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldHeroScore holds the string denoting the hero_score field in the database.
-	FieldHeroScore = "hero_score"
+	// FieldLatestHeroScore holds the string denoting the latest_hero_score field in the database.
+	FieldLatestHeroScore = "latest_hero_score"
 	// FieldBetterHeroScore holds the string denoting the better_hero_score field in the database.
 	FieldBetterHeroScore = "better_hero_score"
 	// FieldSocialUserID holds the string denoting the social_user_id field in the database.
@@ -39,7 +39,7 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldHeroScore,
+	FieldLatestHeroScore,
 	FieldBetterHeroScore,
 	FieldSocialUserID,
 	FieldSocialAvatarURL,
@@ -54,8 +54,8 @@ var Columns = []string{
 }
 
 var (
-	// DefaultHeroScore holds the default value on creation for the hero_score field.
-	DefaultHeroScore int
+	// DefaultLatestHeroScore holds the default value on creation for the latest_hero_score field.
+	DefaultLatestHeroScore int
 	// DefaultBetterHeroScore holds the default value on creation for the better_hero_score field.
 	DefaultBetterHeroScore int
 	// DefaultSocialUserID holds the default value on creation for the social_user_id field.
