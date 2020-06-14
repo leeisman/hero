@@ -129,7 +129,7 @@ func Rank(c echo.Context) error {
 	userTotal, err := user.Count(ctx)
 	socialUserID := c.QueryParam("fb_user_id")
 	if socialUserID == "" {
-		return controllers.ResponseFail(fmt.Errorf("lack social_user_id"), c)
+		return controllers.ResponseFail(fmt.Errorf("lack fb_user_id"), c)
 	}
 	floatUserTotal := float32(userTotal)
 	if err != nil {
