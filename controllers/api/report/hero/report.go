@@ -2,7 +2,6 @@ package hero
 
 import (
 	"context"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"hero/controllers"
 	"hero/database/ent"
@@ -128,9 +127,7 @@ func Rank(c echo.Context) error {
 	ctx := context.Background()
 	userTotal, err := user.Count(ctx)
 	socialUserID := c.QueryParam("fb_user_id")
-	if socialUserID == "" {
-		return controllers.ResponseFail(fmt.Errorf("lack fb_user_id"), c)
-	}
+
 	floatUserTotal := float32(userTotal)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
@@ -153,26 +150,29 @@ func Rank(c echo.Context) error {
 		return controllers.ResponseFail(err, c)
 	}
 
-	meUser, err := user.FindBySocialUserID(ctx, socialUserID)
-	if err != nil {
-		return controllers.ResponseFail(err, c)
-	}
-	countBetterMe, err := user.CountBetterME(ctx, meUser.BetterHeroScore)
-	if err != nil {
-		return controllers.ResponseFail(err, c)
-	}
-	percentage := (floatUserTotal - float32(countBetterMe)) / floatUserTotal * 100
-	me := &subRankResponse{
-		LatestHeroScore: meUser.LatestHeroScore,
-		BetterHeroScore: meUser.BetterHeroScore,
-		SocialName:      meUser.SocialName,
-		SocialEmail:     meUser.SocialEmail,
-		SocialAvatarURL: meUser.SocialAvatarURL,
-		Percentage:      percentage,
-	}
 	rankResponse := &RankResponse{
 		Rank: subRankResp,
-		ME:   me,
+	}
+
+	if socialUserID != "" {
+		meUser, err := user.FindBySocialUserID(ctx, socialUserID)
+		if err != nil {
+			return controllers.ResponseFail(err, c)
+		}
+		countBetterMe, err := user.CountBetterME(ctx, meUser.BetterHeroScore)
+		if err != nil {
+			return controllers.ResponseFail(err, c)
+		}
+		percentage := (floatUserTotal - float32(countBetterMe)) / floatUserTotal * 100
+		me := &subRankResponse{
+			LatestHeroScore: meUser.LatestHeroScore,
+			BetterHeroScore: meUser.BetterHeroScore,
+			SocialName:      meUser.SocialName,
+			SocialEmail:     meUser.SocialEmail,
+			SocialAvatarURL: meUser.SocialAvatarURL,
+			Percentage:      percentage,
+		}
+		rankResponse.ME = me
 	}
 
 	return controllers.ResponseSuccess(rankResponse, c)
