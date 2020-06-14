@@ -48,7 +48,7 @@ func Play(c echo.Context) error {
 		return controllers.ResponseFail(err, c)
 	}
 	//找不到user也會當err,故不處理err
-	user, err := userRepository.FindBySocialUserID(ctx, client, request.FbUserID)
+	user, err := userRepository.FindBySocialUserID(ctx, request.FbUserID)
 	if user == nil {
 		logger.Printf("not found user id ", request.FbUserID)
 		if err != nil {
@@ -116,7 +116,7 @@ func Record(c echo.Context) error {
 	if userActiveRecord.EndedAt != nil {
 		return controllers.ResponseFail(fmt.Errorf("already finished"), c)
 	}
-	user, _ := userRepository.FindBySocialUserID(ctx, client, request.FbUserID)
+	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
 	repeatStatus := user.HeroRepeat
 	if user == nil {
 		return controllers.ResponseFail(fmt.Errorf("User no found: %s", request.FbUserID), c)
@@ -174,7 +174,7 @@ func Tracking(c echo.Context) error {
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	user, err := userRepository.FindBySocialUserID(ctx, client, request.FbUserID)
+	user, err := userRepository.FindBySocialUserID(ctx, request.FbUserID)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}

@@ -2,8 +2,10 @@ package hero
 
 import (
 	"context"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"hero/controllers"
+	"hero/database/ent"
 	"hero/enums"
 	"hero/pkg/logger"
 	"hero/repositories/user"
@@ -29,6 +31,7 @@ type UserCountResponse struct {
 
 type RankResponse struct {
 	Rank []*subRankResponse `json:"rank"`
+	ME   *subRankResponse   `json:"me"`
 }
 
 type subRankResponse struct {
@@ -124,14 +127,18 @@ func ScoreCount(c echo.Context) error {
 func Rank(c echo.Context) error {
 	ctx := context.Background()
 	userTotal, err := user.Count(ctx)
+	socialUserID := c.QueryParam("fb_user_id")
+	if socialUserID == "" {
+		return controllers.ResponseFail(fmt.Errorf("lack social_user_id"), c)
+	}
 	floatUserTotal := float32(userTotal)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	users, err := user.FindByRankBetterHeroScore(ctx, 10)
-	rankResp := make([]*subRankResponse, 0)
-	for index, rankUser := range users {
-		percentage := (floatUserTotal - (float32(index + 1))) / floatUserTotal * 100
+	rankUsers, err := user.FindByRankBetterHeroScore(ctx, 10)
+	subRankResp := make([]*subRankResponse, 0)
+	for _, rankUser := range rankUsers {
+		percentage := (floatUserTotal - (float32(countRankBetterME(rankUsers, rankUser.BetterHeroScore)))) / floatUserTotal * 100
 		subRankResponse := &subRankResponse{
 			LatestHeroScore: rankUser.LatestHeroScore,
 			BetterHeroScore: rankUser.BetterHeroScore,
@@ -140,10 +147,43 @@ func Rank(c echo.Context) error {
 			SocialAvatarURL: rankUser.SocialAvatarURL,
 			Percentage:      percentage,
 		}
-		rankResp = append(rankResp, subRankResponse)
+		subRankResp = append(subRankResp, subRankResponse)
 	}
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	return controllers.ResponseSuccess(rankResp, c)
+
+	meUser, err := user.FindBySocialUserID(ctx, socialUserID)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
+	countBetterMe, err := user.CountBetterME(ctx, meUser.BetterHeroScore)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
+	percentage := (floatUserTotal - float32(countBetterMe)) / floatUserTotal * 100
+	me := &subRankResponse{
+		LatestHeroScore: meUser.LatestHeroScore,
+		BetterHeroScore: meUser.BetterHeroScore,
+		SocialName:      meUser.SocialName,
+		SocialEmail:     meUser.SocialEmail,
+		SocialAvatarURL: meUser.SocialAvatarURL,
+		Percentage:      percentage,
+	}
+	rankResponse := &RankResponse{
+		Rank: subRankResp,
+		ME:   me,
+	}
+
+	return controllers.ResponseSuccess(rankResponse, c)
+}
+
+func countRankBetterME(rankUsers []*ent.User, meScore int) int {
+	betterME := 0
+	for _, rankUser := range rankUsers {
+		if rankUser.BetterHeroScore > meScore {
+			betterME++
+		}
+	}
+	return betterME
 }

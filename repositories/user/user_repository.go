@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-func FindBySocialUserID(ctx context.Context, client *ent.Tx, socialUserID string) (*ent.User, error) {
-	return client.User.Query().
+func FindBySocialUserID(ctx context.Context, socialUserID string) (*ent.User, error) {
+	return mysql.Client().User.Query().
 		Where(
 			tableUser.And(
 				tableUser.SocialUserIDEqualFold(socialUserID),
@@ -75,4 +75,12 @@ func Create(ctx context.Context, client *ent.Tx, user *ent.User) (*ent.User, err
 
 func Count(ctx context.Context) (int, error) {
 	return mysql.Client().User.Query().Count(ctx)
+}
+
+func CountBetterME(ctx context.Context, meScore int) (int, error) {
+	return mysql.Client().User.Query().Where(
+		tableUser.And(
+			tableUser.BetterHeroScoreGT(meScore),
+		),
+	).Count(ctx)
 }
