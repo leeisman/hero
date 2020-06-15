@@ -23,7 +23,7 @@ var Server = &cobra.Command{
 
 func AutoMigrate() {
 	client := mysql.Client()
-	defer client.Close()
+	//defer client.Close()
 	ctx := context.Background()
 	// Run migration.
 	err := client.Debug().Schema.Create(

@@ -32,7 +32,7 @@ const HOST = "https://hero-lxaqvhvivq-an.a.run.app"
 func ActiveSeed() {
 	logger.Print("seed to ", HOST)
 	var wg sync.WaitGroup
-	for i := 0; i <= 5000; i++ {
+	for i := 0; i <= 1600; i++ {
 		wg.Add(1)
 		xid := xid.New()
 		go activeSeed(xid.String(), &wg)
@@ -71,7 +71,7 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 		return
 	}
 	log.Print("seed play status:", apiResp.Status)
-	if apiResp.Body != nil {
+	if apiResp.StatusCode == 200 {
 		req, err := http.NewRequest("POST", HOST+"/api/active/hero/record", nil)
 		req.Header.Add("Content-Type", "application/json; charset=UTF-8")
 		playResp := &struct {
@@ -111,5 +111,8 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 		apiResp.Body.Close()
 		log.Print("seed record record:", apiResp.Status)
 		return
+	}else{
+		b, _ := ioutil.ReadAll(apiResp.Body)
+		log.Print("resp body: ", string(b))
 	}
 }

@@ -4,17 +4,21 @@ import (
 	"database/sql"
 	"fmt"
 	entsql "github.com/facebookincubator/ent/dialect/sql"
+	_ "github.com/go-sql-driver/mysql"
 	"hero/configs"
 	"hero/database/ent"
 	"hero/pkg/logger"
+	"os"
+	"strconv"
 	"time"
 )
 
 var (
-	defaultDB *sql.DB
+	defaultDB     *sql.DB
+	defaultClient *ent.Client
 )
 
-func Client() *ent.Client {
+func init() {
 	dataSourceName := configs.Get("database.mysql_url")
 
 	var (
@@ -26,39 +30,38 @@ func Client() *ent.Client {
 
 	dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s", dbUser, dbPwd, instanceConnectionName, dbName)
 
+	dbMaxIdleConns := 1
+	maxOpenConns := 5
 	if configs.EnvPath != "local" {
 		dataSourceName = dbURI + "?parseTime=true"
+		if MAX_IDLE_CONNS := os.Getenv("MAX_IDLE_CONNS"); MAX_IDLE_CONNS != "" {
+			dbMaxIdleConns, _ = strconv.Atoi(MAX_IDLE_CONNS)
+		}
+		if MAX_OPEN_CONNS := os.Getenv("MAX_OPEN_CONNS"); MAX_OPEN_CONNS != "" {
+			maxOpenConns, _ = strconv.Atoi(MAX_OPEN_CONNS)
+		}
 	}
 
 	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
-		logger.Error("failed connecting to mysql: " + err.Error())
-		return nil
+		panic("failed connecting to mysql: " + err.Error())
 	}
 	if db == nil {
-		logger.Error("db nil")
-		return nil
+		panic("db nil")
 	}
-	db.SetMaxIdleConns(10)
-	db.SetMaxOpenConns(100)
-	db.SetConnMaxLifetime(time.Second)
+
+	db.SetMaxIdleConns(dbMaxIdleConns)
+	db.SetMaxOpenConns(maxOpenConns)
+	db.SetConnMaxLifetime(1 * time.Hour)
 	// Create an ent.Driver from `db`.
 	drv := entsql.OpenDB("mysql", db)
 
-	db2, err := sql.Open("mysql", dataSourceName)
-	if err != nil {
-		logger.Error("failed connecting to mysql: " + err.Error())
-		return nil
-	}
-	if db2 == nil {
-		logger.Error("db nil")
-		return nil
-	}
-	db2.SetMaxIdleConns(1)
-	db2.SetMaxOpenConns(1)
-	db2.SetConnMaxLifetime(time.Hour)
-	defaultDB = db2
-	return ent.NewClient(ent.Driver(drv)).Debug()
+	defaultDB = db
+	defaultClient = ent.NewClient(ent.Driver(drv)).Debug()
+}
+
+func Client() *ent.Client {
+	return defaultClient
 }
 
 func DB() *sql.DB {

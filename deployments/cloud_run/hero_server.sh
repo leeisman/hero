@@ -6,7 +6,7 @@ gcloud run deploy "${SERVICE_NAME}" \
       --allow-unauthenticated \
       --cpu 2000m \
       --memory 1024Mi \
-      --max-instances 13 \
+      --max-instances 1 \
       --platform managed \
       --region  asia-northeast1\
       --project "${PROJECT_NAME}" \
