@@ -32,11 +32,11 @@ const HOST = "https://hero-lxaqvhvivq-an.a.run.app"
 func ActiveSeed() {
 	logger.Print("seed to ", HOST)
 	var wg sync.WaitGroup
-	for i := 0; i <= 1600; i++ {
+	for i := 0; i <= 1600000; i++ {
 		wg.Add(1)
 		xid := xid.New()
 		go activeSeed(xid.String(), &wg)
-		time.Sleep(time.Millisecond * 50)
+		time.Sleep(time.Second / 1)
 	}
 	wg.Wait()
 }
