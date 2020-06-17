@@ -37,6 +37,7 @@ type UserMutation struct {
 	addlatest_hero_score *int
 	better_hero_score    *int
 	addbetter_hero_score *int
+	better_hero_score_at *time.Time
 	social_user_id       *string
 	social_avatar_url    *string
 	social_email         *string
@@ -251,6 +252,56 @@ func (m *UserMutation) AddedBetterHeroScore() (r int, exists bool) {
 func (m *UserMutation) ResetBetterHeroScore() {
 	m.better_hero_score = nil
 	m.addbetter_hero_score = nil
+}
+
+// SetBetterHeroScoreAt sets the better_hero_score_at field.
+func (m *UserMutation) SetBetterHeroScoreAt(t time.Time) {
+	m.better_hero_score_at = &t
+}
+
+// BetterHeroScoreAt returns the better_hero_score_at value in the mutation.
+func (m *UserMutation) BetterHeroScoreAt() (r time.Time, exists bool) {
+	v := m.better_hero_score_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBetterHeroScoreAt returns the old better_hero_score_at value of the User.
+// If the User object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *UserMutation) OldBetterHeroScoreAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldBetterHeroScoreAt is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldBetterHeroScoreAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBetterHeroScoreAt: %w", err)
+	}
+	return oldValue.BetterHeroScoreAt, nil
+}
+
+// ClearBetterHeroScoreAt clears the value of better_hero_score_at.
+func (m *UserMutation) ClearBetterHeroScoreAt() {
+	m.better_hero_score_at = nil
+	m.clearedFields[user.FieldBetterHeroScoreAt] = struct{}{}
+}
+
+// BetterHeroScoreAtCleared returns if the field better_hero_score_at was cleared in this mutation.
+func (m *UserMutation) BetterHeroScoreAtCleared() bool {
+	_, ok := m.clearedFields[user.FieldBetterHeroScoreAt]
+	return ok
+}
+
+// ResetBetterHeroScoreAt reset all changes of the "better_hero_score_at" field.
+func (m *UserMutation) ResetBetterHeroScoreAt() {
+	m.better_hero_score_at = nil
+	delete(m.clearedFields, user.FieldBetterHeroScoreAt)
 }
 
 // SetSocialUserID sets the social_user_id field.
@@ -703,12 +754,15 @@ func (m *UserMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.latest_hero_score != nil {
 		fields = append(fields, user.FieldLatestHeroScore)
 	}
 	if m.better_hero_score != nil {
 		fields = append(fields, user.FieldBetterHeroScore)
+	}
+	if m.better_hero_score_at != nil {
+		fields = append(fields, user.FieldBetterHeroScoreAt)
 	}
 	if m.social_user_id != nil {
 		fields = append(fields, user.FieldSocialUserID)
@@ -752,6 +806,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.LatestHeroScore()
 	case user.FieldBetterHeroScore:
 		return m.BetterHeroScore()
+	case user.FieldBetterHeroScoreAt:
+		return m.BetterHeroScoreAt()
 	case user.FieldSocialUserID:
 		return m.SocialUserID()
 	case user.FieldSocialAvatarURL:
@@ -785,6 +841,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldLatestHeroScore(ctx)
 	case user.FieldBetterHeroScore:
 		return m.OldBetterHeroScore(ctx)
+	case user.FieldBetterHeroScoreAt:
+		return m.OldBetterHeroScoreAt(ctx)
 	case user.FieldSocialUserID:
 		return m.OldSocialUserID(ctx)
 	case user.FieldSocialAvatarURL:
@@ -827,6 +885,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBetterHeroScore(v)
+		return nil
+	case user.FieldBetterHeroScoreAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBetterHeroScoreAt(v)
 		return nil
 	case user.FieldSocialUserID:
 		v, ok := value.(string)
@@ -979,6 +1044,9 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // during this mutation.
 func (m *UserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(user.FieldBetterHeroScoreAt) {
+		fields = append(fields, user.FieldBetterHeroScoreAt)
+	}
 	if m.FieldCleared(user.FieldCreatedAt) {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -999,6 +1067,9 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
 	switch name {
+	case user.FieldBetterHeroScoreAt:
+		m.ClearBetterHeroScoreAt()
+		return nil
 	case user.FieldCreatedAt:
 		m.ClearCreatedAt()
 		return nil
@@ -1019,6 +1090,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldBetterHeroScore:
 		m.ResetBetterHeroScore()
+		return nil
+	case user.FieldBetterHeroScoreAt:
+		m.ResetBetterHeroScoreAt()
 		return nil
 	case user.FieldSocialUserID:
 		m.ResetSocialUserID()

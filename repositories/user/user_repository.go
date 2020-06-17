@@ -21,6 +21,7 @@ func FindBySocialUserID(ctx context.Context, socialUserID string) (*ent.User, er
 func FindByRankBetterHeroScore(ctx context.Context, limit int) ([]*ent.User, error) {
 	users, err := mysql.Client().User.Query().Order(
 		ent.Desc("better_hero_score"),
+		ent.Asc("better_hero_score_at"),
 	).Limit(limit).All(ctx)
 
 	formatterUsers := make([]*ent.User, 0)

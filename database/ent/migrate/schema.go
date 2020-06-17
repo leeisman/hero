@@ -13,6 +13,7 @@ var (
 		{Name: "id", Type: field.TypeString},
 		{Name: "latest_hero_score", Type: field.TypeInt},
 		{Name: "better_hero_score", Type: field.TypeInt},
+		{Name: "better_hero_score_at", Type: field.TypeTime, Nullable: true},
 		{Name: "social_user_id", Type: field.TypeString, Default: ""},
 		{Name: "social_avatar_url", Type: field.TypeString, Default: ""},
 		{Name: "social_email", Type: field.TypeString, Default: ""},

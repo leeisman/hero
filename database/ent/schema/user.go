@@ -16,6 +16,7 @@ func (User) Fields() []ent.Field {
 		field.String("id").Comment("pk"),
 		field.Int("latest_hero_score").Default(0),
 		field.Int("better_hero_score").Default(0),
+		field.Time("better_hero_score_at").Optional(),
 		field.String("social_user_id").Default(""),
 		field.String("social_avatar_url").Default(""),
 		field.String("social_email").Default(""),

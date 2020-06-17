@@ -11,6 +11,8 @@ const (
 	FieldLatestHeroScore = "latest_hero_score"
 	// FieldBetterHeroScore holds the string denoting the better_hero_score field in the database.
 	FieldBetterHeroScore = "better_hero_score"
+	// FieldBetterHeroScoreAt holds the string denoting the better_hero_score_at field in the database.
+	FieldBetterHeroScoreAt = "better_hero_score_at"
 	// FieldSocialUserID holds the string denoting the social_user_id field in the database.
 	FieldSocialUserID = "social_user_id"
 	// FieldSocialAvatarURL holds the string denoting the social_avatar_url field in the database.
@@ -41,6 +43,7 @@ var Columns = []string{
 	FieldID,
 	FieldLatestHeroScore,
 	FieldBetterHeroScore,
+	FieldBetterHeroScoreAt,
 	FieldSocialUserID,
 	FieldSocialAvatarURL,
 	FieldSocialEmail,
