@@ -36,7 +36,7 @@ func ActiveSeed() {
 		wg.Add(1)
 		xid := xid.New()
 		go activeSeed(xid.String(), &wg)
-		time.Sleep(time.Millisecond * 50)
+		time.Sleep(time.Second / 20)
 	}
 	wg.Wait()
 }
@@ -111,7 +111,7 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 		apiResp.Body.Close()
 		log.Print("seed record record:", apiResp.Status)
 		return
-	}else{
+	} else {
 		b, _ := ioutil.ReadAll(apiResp.Body)
 		log.Print("resp body: ", string(b))
 	}
