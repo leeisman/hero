@@ -11,4 +11,6 @@ gcloud run deploy "${SERVICE_NAME}" \
       --region  asia-northeast1\
       --project "${PROJECT_NAME}" \
       --set-env-vars  ^$$^ENV="${ENV}" \
+      --set-env-vars  ^$$^MAX_IDLE_CONNS="${MAX_IDLE_CONNS}" \
+      --set-env-vars  ^$$^MAX_OPEN_CONNS="${MAX_OPEN_CONNS}" \
 
