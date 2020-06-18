@@ -2,6 +2,7 @@ package hero
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/xid"
@@ -44,12 +45,14 @@ func Play(c echo.Context) error {
 	ctx := context.Background()
 	client, err := mysql.Client().Tx(ctx)
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	request := &PlayRequest{}
 	now := time.Now().UTC()
 	err = c.Bind(request)
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	//找不到user也會當err,故不處理err
@@ -78,6 +81,7 @@ func Play(c echo.Context) error {
 	}
 
 	if user == nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("Create user fail: %s", request.FbUserID), c)
 	}
 	userActiveRecord, err := userActiveRecordRepository.Create(ctx, &ent.UserActiveRecord{
@@ -98,7 +102,9 @@ func Play(c echo.Context) error {
 	countFinishedOrUnfinishedUserTotal(ctx, 0)
 	err = client.Commit()
 	if err != nil {
+		mysql.Rollback(client, err)
 		logger.Print("play commit err ", err.Error())
+		return controllers.ResponseFail(errors.New("play commit err "), c)
 	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
@@ -107,29 +113,36 @@ func Record(c echo.Context) error {
 	ctx := context.Background()
 	client, err := mysql.Client().Tx(ctx)
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	request := &RecordRequest{}
 	err = c.Bind(request)
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	userActiveRecord, err := userActiveRecordRepository.FindByID(ctx, request.RecordID)
 	if err != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	if userActiveRecord == nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("userActiveRecord nil"), c)
 	}
 	if userActiveRecord.EndedAt != nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("already finished"), c)
 	}
 	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
 	if user == nil {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("User no found: %s", request.FbUserID), c)
 	}
 	repeatStatus := user.HeroRepeat
 	if userActiveRecord.UserID != user.ID {
+		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("Record no match user: %s", request.FbUserID), c)
 	}
 	queryBuilder := user.Update().SetHeroPlayed(1)
@@ -169,20 +182,18 @@ func Record(c echo.Context) error {
 	countRepeatOrNotRepeatUserTotal(ctx, repeatStatus, user.ID)
 	err = client.Commit()
 	if err != nil {
+		mysql.Rollback(client, err)
 		logger.Print("play commit err ", err.Error())
+		return controllers.ResponseFail(errors.New("play commit err "), c)
 	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
 func Tracking(c echo.Context) error {
 	ctx := context.Background()
-	client, err := mysql.Client().Tx(ctx)
-	if err != nil {
-		return controllers.ResponseFail(err, c)
-	}
 	request := &TrackingRequest{}
 	now := time.Now().UTC()
-	err = c.Bind(request)
+	err := c.Bind(request)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
@@ -204,10 +215,6 @@ func Tracking(c echo.Context) error {
 	})
 	if err != nil {
 		return controllers.ResponseFail(err, c)
-	}
-	err = client.Commit()
-	if err != nil {
-		logger.Print("play commit err ", err.Error())
 	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
