@@ -6,8 +6,10 @@ import (
 	"github.com/spf13/cobra"
 	"hero/database/ent/migrate"
 	"hero/pkg/db/mysql"
+	"hero/pkg/graceful"
 	"hero/pkg/logger"
 	"hero/routes"
+	"time"
 )
 
 var Server = &cobra.Command{
@@ -17,7 +19,7 @@ var Server = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		//建立table
 		AutoMigrate()
-		routes.Run()
+		graceful.Launch(routes.Run, routes.Shutdown, 1*time.Minute)
 	},
 }
 

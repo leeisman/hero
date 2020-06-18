@@ -6,13 +6,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"hero/configs"
+	"hero/pkg/db/mysql"
 	"hero/pkg/logger"
 	"hero/utils"
 	"io/ioutil"
 	"os"
 )
 
-func Run() {
+func Run() error {
 	port := configs.Get("server.port")
 
 	e := echo.New()
@@ -60,5 +61,14 @@ func Run() {
 	if configs.EnvPath != "local" {
 		port = os.Getenv("PORT")
 	}
-	e.Logger.Fatal(e.Start(":" + port))
+	return e.Start(":" + port)
+}
+
+func Shutdown() error {
+	logger.Print("showdown db ...")
+	if err:=mysql.Close();err!=nil{
+		return err
+	}
+	logger.Print("showdown db done.")
+	return nil
 }

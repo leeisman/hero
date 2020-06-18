@@ -1,2 +1,3 @@
 mysql_url: "root:root@tcp(localhost:3306)/hero?parseTime=true"
+#mysql_url: "root:m7dnbdA1y80ypOe4@tcp(34.84.24.127:3306)/hero?parseTime=true"
 redis_url: "localhost:6379"

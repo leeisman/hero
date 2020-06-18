@@ -52,7 +52,7 @@ func init() {
 
 	db.SetMaxIdleConns(dbMaxIdleConns)
 	db.SetMaxOpenConns(maxOpenConns)
-	db.SetConnMaxLifetime(1 * time.Hour)
+	db.SetConnMaxLifetime(1 * time.Second)
 	// Create an ent.Driver from `db`.
 	drv := entsql.OpenDB("mysql", db)
 
@@ -73,4 +73,8 @@ func Rollback(tx *ent.Tx, err error) {
 	if err := tx.Rollback(); err != nil {
 		logger.Print("mysql rollback err", err.Error())
 	}
+}
+
+func Close() error  {
+	return defaultDB.Close()
 }
