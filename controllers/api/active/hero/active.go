@@ -157,6 +157,7 @@ func Record(c echo.Context) error {
 	queryBuilder = user.Update().SetLatestHeroScore(request.Score)
 	if request.Score > user.BetterHeroScore {
 		queryBuilder = queryBuilder.SetBetterHeroScore(request.Score)
+		queryBuilder = queryBuilder.SetBetterHeroScoreAt(now)
 	}
 	_, err = queryBuilder.Save(ctx)
 	if err != nil {
