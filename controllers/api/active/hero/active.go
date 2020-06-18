@@ -11,6 +11,7 @@ import (
 	"hero/pkg/db/mysql"
 	"hero/pkg/db/redis"
 	"hero/pkg/logger"
+	prizeRepository "hero/repositories/prize"
 	userRepository "hero/repositories/user"
 	userActiveRecordRepository "hero/repositories/user_active_record"
 	"time"
@@ -33,6 +34,10 @@ type TrackingRequest struct {
 	FbUserID string `json:"fb_user_id" form:"fb_user_id" query:"fb_user_id"`
 	FbName   string `json:"fb_name" form:"fb_name" query:"fb_name"`
 	Type     string `json:"type"`
+}
+
+type PrizeRequest struct {
+	FbUserID string `json:"fb_user_id" form:"fb_user_id" query:"fb_user_id"`
 }
 
 func Play(c echo.Context) error {
@@ -204,6 +209,26 @@ func Tracking(c echo.Context) error {
 		logger.Print("play commit err ", err.Error())
 	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
+}
+
+func Prize(c echo.Context) error {
+	ctx := context.Background()
+	request := &PrizeRequest{}
+	now := time.Now().UTC().Format("2006-01-02")
+	logger.Print("now", now)
+	err := c.Bind(request)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
+	prize, _ := prizeRepository.FindBySocialUserIDAndDate(ctx, request.FbUserID, now)
+	if prize != nil {
+		return controllers.ResponseFail(fmt.Errorf("User has recorded"), c)
+	}
+	prize, err = prizeRepository.Create(ctx, request.FbUserID, now)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
+	return controllers.ResponseSuccess(prize, c)
 }
 
 func countFinishedOrUnfinishedUserTotal(ctx context.Context, isFinished uint) {

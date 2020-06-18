@@ -5,6 +5,7 @@ package ent
 import (
 	"context"
 	"fmt"
+	"hero/database/ent/prize"
 	"hero/database/ent/user"
 	"hero/database/ent/useractiverecord"
 	"sync"
@@ -22,9 +23,380 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypePrize            = "Prize"
 	TypeUser             = "User"
 	TypeUserActiveRecord = "UserActiveRecord"
 )
+
+// PrizeMutation represents an operation that mutate the Prizes
+// nodes in the graph.
+type PrizeMutation struct {
+	config
+	op             Op
+	typ            string
+	id             *int
+	social_user_id *string
+	date           *string
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*Prize, error)
+}
+
+var _ ent.Mutation = (*PrizeMutation)(nil)
+
+// prizeOption allows to manage the mutation configuration using functional options.
+type prizeOption func(*PrizeMutation)
+
+// newPrizeMutation creates new mutation for $n.Name.
+func newPrizeMutation(c config, op Op, opts ...prizeOption) *PrizeMutation {
+	m := &PrizeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePrize,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPrizeID sets the id field of the mutation.
+func withPrizeID(id int) prizeOption {
+	return func(m *PrizeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Prize
+		)
+		m.oldValue = func(ctx context.Context) (*Prize, error) {
+			once.Do(func() {
+				if m.done {
+					err = fmt.Errorf("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Prize.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPrize sets the old Prize of the mutation.
+func withPrize(node *Prize) prizeOption {
+	return func(m *PrizeMutation) {
+		m.oldValue = func(context.Context) (*Prize, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PrizeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PrizeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, fmt.Errorf("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the id value in the mutation. Note that, the id
+// is available only if it was provided to the builder.
+func (m *PrizeMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// SetSocialUserID sets the social_user_id field.
+func (m *PrizeMutation) SetSocialUserID(s string) {
+	m.social_user_id = &s
+}
+
+// SocialUserID returns the social_user_id value in the mutation.
+func (m *PrizeMutation) SocialUserID() (r string, exists bool) {
+	v := m.social_user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSocialUserID returns the old social_user_id value of the Prize.
+// If the Prize object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *PrizeMutation) OldSocialUserID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldSocialUserID is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldSocialUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSocialUserID: %w", err)
+	}
+	return oldValue.SocialUserID, nil
+}
+
+// ResetSocialUserID reset all changes of the "social_user_id" field.
+func (m *PrizeMutation) ResetSocialUserID() {
+	m.social_user_id = nil
+}
+
+// SetDate sets the date field.
+func (m *PrizeMutation) SetDate(s string) {
+	m.date = &s
+}
+
+// Date returns the date value in the mutation.
+func (m *PrizeMutation) Date() (r string, exists bool) {
+	v := m.date
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDate returns the old date value of the Prize.
+// If the Prize object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *PrizeMutation) OldDate(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldDate is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldDate requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDate: %w", err)
+	}
+	return oldValue.Date, nil
+}
+
+// ClearDate clears the value of date.
+func (m *PrizeMutation) ClearDate() {
+	m.date = nil
+	m.clearedFields[prize.FieldDate] = struct{}{}
+}
+
+// DateCleared returns if the field date was cleared in this mutation.
+func (m *PrizeMutation) DateCleared() bool {
+	_, ok := m.clearedFields[prize.FieldDate]
+	return ok
+}
+
+// ResetDate reset all changes of the "date" field.
+func (m *PrizeMutation) ResetDate() {
+	m.date = nil
+	delete(m.clearedFields, prize.FieldDate)
+}
+
+// Op returns the operation name.
+func (m *PrizeMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (Prize).
+func (m *PrizeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during
+// this mutation. Note that, in order to get all numeric
+// fields that were in/decremented, call AddedFields().
+func (m *PrizeMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.social_user_id != nil {
+		fields = append(fields, prize.FieldSocialUserID)
+	}
+	if m.date != nil {
+		fields = append(fields, prize.FieldDate)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name.
+// The second boolean value indicates that this field was
+// not set, or was not define in the schema.
+func (m *PrizeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case prize.FieldSocialUserID:
+		return m.SocialUserID()
+	case prize.FieldDate:
+		return m.Date()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database.
+// An error is returned if the mutation operation is not UpdateOne,
+// or the query to the database was failed.
+func (m *PrizeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case prize.FieldSocialUserID:
+		return m.OldSocialUserID(ctx)
+	case prize.FieldDate:
+		return m.OldDate(ctx)
+	}
+	return nil, fmt.Errorf("unknown Prize field %s", name)
+}
+
+// SetField sets the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *PrizeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case prize.FieldSocialUserID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSocialUserID(v)
+		return nil
+	case prize.FieldDate:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDate(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Prize field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented
+// or decremented during this mutation.
+func (m *PrizeMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was in/decremented
+// from a field with the given name. The second value indicates
+// that this field was not set, or was not define in the schema.
+func (m *PrizeMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value for the given name. It returns an
+// error if the field is not defined in the schema, or if the
+// type mismatch the field type.
+func (m *PrizeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Prize numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared
+// during this mutation.
+func (m *PrizeMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(prize.FieldDate) {
+		fields = append(fields, prize.FieldDate)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicates if this field was
+// cleared in this mutation.
+func (m *PrizeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value for the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PrizeMutation) ClearField(name string) error {
+	switch name {
+	case prize.FieldDate:
+		m.ClearDate()
+		return nil
+	}
+	return fmt.Errorf("unknown Prize nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation regarding the
+// given field name. It returns an error if the field is not
+// defined in the schema.
+func (m *PrizeMutation) ResetField(name string) error {
+	switch name {
+	case prize.FieldSocialUserID:
+		m.ResetSocialUserID()
+		return nil
+	case prize.FieldDate:
+		m.ResetDate()
+		return nil
+	}
+	return fmt.Errorf("unknown Prize field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this
+// mutation.
+func (m *PrizeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all ids (to other nodes) that were added for
+// the given edge name.
+func (m *PrizeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this
+// mutation.
+func (m *PrizeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all ids (to other nodes) that were removed for
+// the given edge name.
+func (m *PrizeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this
+// mutation.
+func (m *PrizeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean indicates if this edge was
+// cleared in this mutation.
+func (m *PrizeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value for the given name. It returns an
+// error if the edge name is not defined in the schema.
+func (m *PrizeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Prize unique edge %s", name)
+}
+
+// ResetEdge resets all changes in the mutation regarding the
+// given edge name. It returns an error if the edge is not
+// defined in the schema.
+func (m *PrizeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Prize edge %s", name)
+}
 
 // UserMutation represents an operation that mutate the Users
 // nodes in the graph.
@@ -37,6 +409,7 @@ type UserMutation struct {
 	addlatest_hero_score *int
 	better_hero_score    *int
 	addbetter_hero_score *int
+	better_hero_score_at *time.Time
 	social_user_id       *string
 	social_avatar_url    *string
 	social_email         *string
@@ -251,6 +624,56 @@ func (m *UserMutation) AddedBetterHeroScore() (r int, exists bool) {
 func (m *UserMutation) ResetBetterHeroScore() {
 	m.better_hero_score = nil
 	m.addbetter_hero_score = nil
+}
+
+// SetBetterHeroScoreAt sets the better_hero_score_at field.
+func (m *UserMutation) SetBetterHeroScoreAt(t time.Time) {
+	m.better_hero_score_at = &t
+}
+
+// BetterHeroScoreAt returns the better_hero_score_at value in the mutation.
+func (m *UserMutation) BetterHeroScoreAt() (r time.Time, exists bool) {
+	v := m.better_hero_score_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBetterHeroScoreAt returns the old better_hero_score_at value of the User.
+// If the User object wasn't provided to the builder, the object is fetched
+// from the database.
+// An error is returned if the mutation operation is not UpdateOne, or database query fails.
+func (m *UserMutation) OldBetterHeroScoreAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldBetterHeroScoreAt is allowed only on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldBetterHeroScoreAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBetterHeroScoreAt: %w", err)
+	}
+	return oldValue.BetterHeroScoreAt, nil
+}
+
+// ClearBetterHeroScoreAt clears the value of better_hero_score_at.
+func (m *UserMutation) ClearBetterHeroScoreAt() {
+	m.better_hero_score_at = nil
+	m.clearedFields[user.FieldBetterHeroScoreAt] = struct{}{}
+}
+
+// BetterHeroScoreAtCleared returns if the field better_hero_score_at was cleared in this mutation.
+func (m *UserMutation) BetterHeroScoreAtCleared() bool {
+	_, ok := m.clearedFields[user.FieldBetterHeroScoreAt]
+	return ok
+}
+
+// ResetBetterHeroScoreAt reset all changes of the "better_hero_score_at" field.
+func (m *UserMutation) ResetBetterHeroScoreAt() {
+	m.better_hero_score_at = nil
+	delete(m.clearedFields, user.FieldBetterHeroScoreAt)
 }
 
 // SetSocialUserID sets the social_user_id field.
@@ -703,12 +1126,15 @@ func (m *UserMutation) Type() string {
 // this mutation. Note that, in order to get all numeric
 // fields that were in/decremented, call AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.latest_hero_score != nil {
 		fields = append(fields, user.FieldLatestHeroScore)
 	}
 	if m.better_hero_score != nil {
 		fields = append(fields, user.FieldBetterHeroScore)
+	}
+	if m.better_hero_score_at != nil {
+		fields = append(fields, user.FieldBetterHeroScoreAt)
 	}
 	if m.social_user_id != nil {
 		fields = append(fields, user.FieldSocialUserID)
@@ -752,6 +1178,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.LatestHeroScore()
 	case user.FieldBetterHeroScore:
 		return m.BetterHeroScore()
+	case user.FieldBetterHeroScoreAt:
+		return m.BetterHeroScoreAt()
 	case user.FieldSocialUserID:
 		return m.SocialUserID()
 	case user.FieldSocialAvatarURL:
@@ -785,6 +1213,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldLatestHeroScore(ctx)
 	case user.FieldBetterHeroScore:
 		return m.OldBetterHeroScore(ctx)
+	case user.FieldBetterHeroScoreAt:
+		return m.OldBetterHeroScoreAt(ctx)
 	case user.FieldSocialUserID:
 		return m.OldSocialUserID(ctx)
 	case user.FieldSocialAvatarURL:
@@ -827,6 +1257,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBetterHeroScore(v)
+		return nil
+	case user.FieldBetterHeroScoreAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBetterHeroScoreAt(v)
 		return nil
 	case user.FieldSocialUserID:
 		v, ok := value.(string)
@@ -979,6 +1416,9 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // during this mutation.
 func (m *UserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(user.FieldBetterHeroScoreAt) {
+		fields = append(fields, user.FieldBetterHeroScoreAt)
+	}
 	if m.FieldCleared(user.FieldCreatedAt) {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -999,6 +1439,9 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
 	switch name {
+	case user.FieldBetterHeroScoreAt:
+		m.ClearBetterHeroScoreAt()
+		return nil
 	case user.FieldCreatedAt:
 		m.ClearCreatedAt()
 		return nil
@@ -1019,6 +1462,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldBetterHeroScore:
 		m.ResetBetterHeroScore()
+		return nil
+	case user.FieldBetterHeroScoreAt:
+		m.ResetBetterHeroScoreAt()
 		return nil
 	case user.FieldSocialUserID:
 		m.ResetSocialUserID()

@@ -24,6 +24,7 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
+	Prize            []ent.Hook
 	User             []ent.Hook
 	UserActiveRecord []ent.Hook
 }

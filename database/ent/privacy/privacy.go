@@ -209,6 +209,30 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
+// The PrizeQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type PrizeQueryRuleFunc func(context.Context, *ent.PrizeQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f PrizeQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.PrizeQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.PrizeQuery", q)
+}
+
+// The PrizeMutationRuleFunc type is an adapter to allow the use of ordinary
+// functions as a mutation rule.
+type PrizeMutationRuleFunc func(context.Context, *ent.PrizeMutation) error
+
+// EvalMutation calls f(ctx, m).
+func (f PrizeMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.PrizeMutation); ok {
+		return f(ctx, m)
+	}
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.PrizeMutation", m)
+}
+
 // The UserQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type UserQueryRuleFunc func(context.Context, *ent.UserQuery) error

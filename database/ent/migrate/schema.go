@@ -8,11 +8,25 @@ import (
 )
 
 var (
+	// PrizesColumns holds the columns for the "prizes" table.
+	PrizesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "social_user_id", Type: field.TypeString, Default: ""},
+		{Name: "date", Type: field.TypeString, Nullable: true},
+	}
+	// PrizesTable holds the schema information for the "prizes" table.
+	PrizesTable = &schema.Table{
+		Name:        "prizes",
+		Columns:     PrizesColumns,
+		PrimaryKey:  []*schema.Column{PrizesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
 		{Name: "latest_hero_score", Type: field.TypeInt},
 		{Name: "better_hero_score", Type: field.TypeInt},
+		{Name: "better_hero_score_at", Type: field.TypeTime, Nullable: true},
 		{Name: "social_user_id", Type: field.TypeString, Default: ""},
 		{Name: "social_avatar_url", Type: field.TypeString, Default: ""},
 		{Name: "social_email", Type: field.TypeString, Default: ""},
@@ -52,6 +66,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		PrizesTable,
 		UsersTable,
 		UserActiveRecordsTable,
 	}

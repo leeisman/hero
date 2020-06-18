@@ -13,6 +13,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -23,6 +24,11 @@ type PlayRequest struct {
 	FbName      string `json:"fb_name" form:"fb_name" query:"fb_name"`
 }
 
+var (
+	success int32
+	fail    int32
+)
+
 const TIME_LAYOUT = "2006-01-02 15:04:05"
 
 const HOST = "https://hero-lxaqvhvivq-an.a.run.app"
@@ -30,15 +36,20 @@ const HOST = "https://hero-lxaqvhvivq-an.a.run.app"
 //const HOST = "http://127.0.0.1:9000"
 
 func ActiveSeed() {
+	start := time.Now()
 	logger.Print("seed to ", HOST)
 	var wg sync.WaitGroup
 	for i := 0; i <= 1600000; i++ {
 		wg.Add(1)
 		xid := xid.New()
 		go activeSeed(xid.String(), &wg)
-		time.Sleep(time.Second / 1)
+		time.Sleep(time.Second / 30)
 	}
 	wg.Wait()
+	log.Print("fail: ", fail)
+	log.Print("success: ", success)
+	log.Print("start: ", start)
+	log.Print("end: ", time.Now())
 }
 
 func activeSeed(fbID string, wg *sync.WaitGroup) {
@@ -48,6 +59,8 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 	//req, err := http.NewRequest("POST", "http://127.0.0.1:9000/api/active/hero/play", nil)
 	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
 	if err != nil {
+		atomic.AddInt32(&fail, 1)
+		log.Print("new request err: ", err)
 		return
 	}
 	playRequest := &PlayRequest{
@@ -59,6 +72,7 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 	jsonStr, err := json.Marshal(playRequest)
 	if err != nil {
 		log.Print("marshal err: ", err.Error())
+		atomic.AddInt32(&fail, 1)
 		return
 	}
 	b := bytes.NewBuffer(jsonStr)
@@ -68,6 +82,7 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 	apiResp, err := client.Do(req)
 	if err != nil {
 		logger.Print("test err", err.Error())
+		atomic.AddInt32(&fail, 1)
 		return
 	}
 	log.Print("seed play status:", apiResp.Status)
@@ -80,11 +95,13 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 		resp, err := ioutil.ReadAll(apiResp.Body)
 		if err != nil {
 			logger.Print("read apiResp err ", err.Error())
+			atomic.AddInt32(&fail, 1)
 			return
 		}
 		err = json.Unmarshal(resp, playResp)
 		if err != nil {
 			logger.Print("unmarshal playResp err ", err.Error())
+			atomic.AddInt32(&fail, 1)
 			return
 		}
 
@@ -97,6 +114,7 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 		jsonStr, err := json.Marshal(recordReqeust)
 		if err != nil {
 			log.Print("marshal err: ", err.Error())
+			atomic.AddInt32(&fail, 1)
 			return
 		}
 		b := bytes.NewBuffer(jsonStr)
@@ -105,13 +123,16 @@ func activeSeed(fbID string, wg *sync.WaitGroup) {
 		req.Header.Add("Authorization", "Bearer "+md5Key)
 		apiResp, err := client.Do(req)
 		if err != nil {
+			atomic.AddInt32(&fail, 1)
 			logger.Print("test record err", err.Error())
 			return
 		}
+		atomic.AddInt32(&success, 1)
 		apiResp.Body.Close()
 		log.Print("seed record record:", apiResp.Status)
 		return
-	}else{
+	} else {
+		atomic.AddInt32(&fail, 1)
 		b, _ := ioutil.ReadAll(apiResp.Body)
 		log.Print("resp body: ", string(b))
 	}

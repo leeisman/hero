@@ -70,6 +70,26 @@ func (uu *UserUpdate) AddBetterHeroScore(i int) *UserUpdate {
 	return uu
 }
 
+// SetBetterHeroScoreAt sets the better_hero_score_at field.
+func (uu *UserUpdate) SetBetterHeroScoreAt(t time.Time) *UserUpdate {
+	uu.mutation.SetBetterHeroScoreAt(t)
+	return uu
+}
+
+// SetNillableBetterHeroScoreAt sets the better_hero_score_at field if the given value is not nil.
+func (uu *UserUpdate) SetNillableBetterHeroScoreAt(t *time.Time) *UserUpdate {
+	if t != nil {
+		uu.SetBetterHeroScoreAt(*t)
+	}
+	return uu
+}
+
+// ClearBetterHeroScoreAt clears the value of better_hero_score_at.
+func (uu *UserUpdate) ClearBetterHeroScoreAt() *UserUpdate {
+	uu.mutation.ClearBetterHeroScoreAt()
+	return uu
+}
+
 // SetSocialUserID sets the social_user_id field.
 func (uu *UserUpdate) SetSocialUserID(s string) *UserUpdate {
 	uu.mutation.SetSocialUserID(s)
@@ -333,6 +353,19 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: user.FieldBetterHeroScore,
 		})
 	}
+	if value, ok := uu.mutation.BetterHeroScoreAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldBetterHeroScoreAt,
+		})
+	}
+	if uu.mutation.BetterHeroScoreAtCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: user.FieldBetterHeroScoreAt,
+		})
+	}
 	if value, ok := uu.mutation.SocialUserID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -486,6 +519,26 @@ func (uuo *UserUpdateOne) SetNillableBetterHeroScore(i *int) *UserUpdateOne {
 // AddBetterHeroScore adds i to better_hero_score.
 func (uuo *UserUpdateOne) AddBetterHeroScore(i int) *UserUpdateOne {
 	uuo.mutation.AddBetterHeroScore(i)
+	return uuo
+}
+
+// SetBetterHeroScoreAt sets the better_hero_score_at field.
+func (uuo *UserUpdateOne) SetBetterHeroScoreAt(t time.Time) *UserUpdateOne {
+	uuo.mutation.SetBetterHeroScoreAt(t)
+	return uuo
+}
+
+// SetNillableBetterHeroScoreAt sets the better_hero_score_at field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableBetterHeroScoreAt(t *time.Time) *UserUpdateOne {
+	if t != nil {
+		uuo.SetBetterHeroScoreAt(*t)
+	}
+	return uuo
+}
+
+// ClearBetterHeroScoreAt clears the value of better_hero_score_at.
+func (uuo *UserUpdateOne) ClearBetterHeroScoreAt() *UserUpdateOne {
+	uuo.mutation.ClearBetterHeroScoreAt()
 	return uuo
 }
 
@@ -748,6 +801,19 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (u *User, err error) {
 			Type:   field.TypeInt,
 			Value:  value,
 			Column: user.FieldBetterHeroScore,
+		})
+	}
+	if value, ok := uuo.mutation.BetterHeroScoreAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldBetterHeroScoreAt,
+		})
+	}
+	if uuo.mutation.BetterHeroScoreAtCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Column: user.FieldBetterHeroScoreAt,
 		})
 	}
 	if value, ok := uuo.mutation.SocialUserID(); ok {

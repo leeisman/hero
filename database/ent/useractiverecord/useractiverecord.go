@@ -6,23 +6,15 @@ const (
 	// Label holds the string label denoting the useractiverecord type in the database.
 	Label = "user_active_record"
 	// FieldID holds the string denoting the id field in the database.
-	FieldID = "id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
-	// FieldActiveType holds the string denoting the active_type field in the database.
-	FieldActiveType = "active_type"
-	// FieldScore holds the string denoting the score field in the database.
-	FieldScore = "score"
-	// FieldIsFinished holds the string denoting the is_finished field in the database.
-	FieldIsFinished = "is_finished"
-	// FieldStartedAt holds the string denoting the started_at field in the database.
-	FieldStartedAt = "started_at"
-	// FieldEndedAt holds the string denoting the ended_at field in the database.
-	FieldEndedAt = "ended_at"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
+	FieldID         = "id"          // FieldUserID holds the string denoting the user_id vertex property in the database.
+	FieldUserID     = "user_id"     // FieldActiveType holds the string denoting the active_type vertex property in the database.
+	FieldActiveType = "active_type" // FieldScore holds the string denoting the score vertex property in the database.
+	FieldScore      = "score"       // FieldIsFinished holds the string denoting the is_finished vertex property in the database.
+	FieldIsFinished = "is_finished" // FieldStartedAt holds the string denoting the started_at vertex property in the database.
+	FieldStartedAt  = "started_at"  // FieldEndedAt holds the string denoting the ended_at vertex property in the database.
+	FieldEndedAt    = "ended_at"    // FieldCreatedAt holds the string denoting the created_at vertex property in the database.
+	FieldCreatedAt  = "created_at"  // FieldUpdatedAt holds the string denoting the updated_at vertex property in the database.
+	FieldUpdatedAt  = "updated_at"
 
 	// Table holds the table name of the useractiverecord in the database.
 	Table = "user_active_records"

@@ -47,6 +47,20 @@ func (uc *UserCreate) SetNillableBetterHeroScore(i *int) *UserCreate {
 	return uc
 }
 
+// SetBetterHeroScoreAt sets the better_hero_score_at field.
+func (uc *UserCreate) SetBetterHeroScoreAt(t time.Time) *UserCreate {
+	uc.mutation.SetBetterHeroScoreAt(t)
+	return uc
+}
+
+// SetNillableBetterHeroScoreAt sets the better_hero_score_at field if the given value is not nil.
+func (uc *UserCreate) SetNillableBetterHeroScoreAt(t *time.Time) *UserCreate {
+	if t != nil {
+		uc.SetBetterHeroScoreAt(*t)
+	}
+	return uc
+}
+
 // SetSocialUserID sets the social_user_id field.
 func (uc *UserCreate) SetSocialUserID(s string) *UserCreate {
 	uc.mutation.SetSocialUserID(s)
@@ -301,6 +315,14 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 			Column: user.FieldBetterHeroScore,
 		})
 		u.BetterHeroScore = value
+	}
+	if value, ok := uc.mutation.BetterHeroScoreAt(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: user.FieldBetterHeroScoreAt,
+		})
+		u.BetterHeroScoreAt = value
 	}
 	if value, ok := uc.mutation.SocialUserID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
