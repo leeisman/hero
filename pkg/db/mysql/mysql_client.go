@@ -24,16 +24,16 @@ func init() {
 	var (
 		dbUser                 = "root"
 		dbPwd                  = "m7dnbdA1y80ypOe4"
-		instanceConnectionName = "money-money-279309:asia-northeast1:mdev"
+		instanceConnectionName = "34.84.24.127"
 		dbName                 = "hero_dev"
 	)
 
-	dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s", dbUser, dbPwd, instanceConnectionName, dbName)
-
+	//dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s", dbUser, dbPwd, instanceConnectionName, dbName)
+	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", dbUser, dbPwd, instanceConnectionName, 3306, dbName)
 	dbMaxIdleConns := 1
 	maxOpenConns := 5
-	if configs.EnvPath != "local" {
-		dataSourceName = dbURI + "?parseTime=true"
+	if true {
+		dataSourceName = dbURI
 		if MAX_IDLE_CONNS := os.Getenv("MAX_IDLE_CONNS"); MAX_IDLE_CONNS != "" {
 			dbMaxIdleConns, _ = strconv.Atoi(MAX_IDLE_CONNS)
 		}
@@ -75,6 +75,6 @@ func Rollback(tx *ent.Tx, err error) {
 	}
 }
 
-func Close() error  {
+func Close() error {
 	return defaultDB.Close()
 }
