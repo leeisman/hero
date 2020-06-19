@@ -69,6 +69,9 @@ func DB() *sql.DB {
 }
 
 func Rollback(tx *ent.Tx, err error) {
+	if tx == nil {
+		return
+	}
 	logger.Print("mysql rollback before err", err.Error())
 	if err := tx.Rollback(); err != nil {
 		logger.Print("mysql rollback err", err.Error())
