@@ -223,7 +223,7 @@ func Tracking(c echo.Context) error {
 func Prize(c echo.Context) error {
 	ctx := context.Background()
 	request := &PrizeRequest{}
-	now := time.Now().UTC().Format("2006-01-02")
+	now := time.Now().UTC().Format("2006-01-02 15:04:05")
 	logger.Print("now", now)
 	err := c.Bind(request)
 	if err != nil {
