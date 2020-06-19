@@ -172,6 +172,7 @@ func Record(c echo.Context) error {
 		queryBuilder = queryBuilder.SetBetterHeroScore(request.Score)
 		queryBuilder = queryBuilder.SetBetterHeroScoreAt(now)
 	}
+	queryBuilder = queryBuilder.SetUpdatedAt(now)
 	_, err = queryBuilder.Save(ctx)
 	if err != nil {
 		mysql.Rollback(client, err)
