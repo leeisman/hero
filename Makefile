@@ -8,3 +8,5 @@ run-server-local:
 	export ENV=local &&  go run main.go server
 run-server-dev:
 	export ENV=dev &&  go run main.go server
+run-server-frankie:
+	export ENV=frankie &&  go run main.go server

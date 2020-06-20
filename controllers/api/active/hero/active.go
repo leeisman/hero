@@ -44,15 +44,23 @@ type PrizeRequest struct {
 func Play(c echo.Context) error {
 	ctx := context.Background()
 	client, err := mysql.Client().Tx(ctx)
+	defer func() {
+		logger.Print("play defer", client, err)
+		if err != nil {
+			logger.Print("rollback")
+			mysql.Rollback(client, err)
+		}
+	}()
+
 	if err != nil {
-		mysql.Rollback(client, err)
+		logger.Print("play err mysql tx err", err)
 		return controllers.ResponseFail(err, c)
 	}
 	request := &PlayRequest{}
 	now := time.Now().UTC()
 	err = c.Bind(request)
 	if err != nil {
-		mysql.Rollback(client, err)
+		logger.Print("play err bind request err", err)
 		return controllers.ResponseFail(err, c)
 	}
 	//找不到user也會當err,故不處理err
@@ -60,7 +68,7 @@ func Play(c echo.Context) error {
 	if user == nil {
 		logger.Printf("not found user id ", request.FbUserID)
 		if err != nil {
-			logger.Printf("err ", err.Error())
+			logger.Printf("play info err ", err.Error())
 		}
 		newXID := xid.New()
 		id := "UR_" + newXID.String()
@@ -75,13 +83,13 @@ func Play(c echo.Context) error {
 			UpdatedAt:       now,
 		})
 		if err != nil {
-			mysql.Rollback(client, err)
+			logger.Print("play err userRepository create err", err)
 			return controllers.ResponseFail(err, c)
 		}
 	}
 
 	if user == nil {
-		mysql.Rollback(client, err)
+		logger.Print("user nil ", request.FbUserID)
 		return controllers.ResponseFail(fmt.Errorf("Create user fail: %s", request.FbUserID), c)
 	}
 	userActiveRecord, err := userActiveRecordRepository.Create(ctx, &ent.UserActiveRecord{
@@ -92,18 +100,17 @@ func Play(c echo.Context) error {
 		UpdatedAt:  &now,
 	})
 	if err != nil {
-		mysql.Rollback(client, err)
+		logger.Print("play err userActiveRecordRepository.Create ", err)
 		return controllers.ResponseFail(err, c)
 	}
 	if userActiveRecord == nil {
-		mysql.Rollback(client, err)
+		logger.Print("play err userActiveRecord nil ")
 		return controllers.ResponseFail(fmt.Errorf("Create user active record fail: %s", request.FbUserID), c)
 	}
 	countFinishedOrUnfinishedUserTotal(ctx, 0)
 	err = client.Commit()
 	if err != nil {
-		mysql.Rollback(client, err)
-		logger.Print("play commit err ", err.Error())
+		logger.Print("play err commit err ", err.Error())
 		return controllers.ResponseFail(errors.New("play commit err "), c)
 	}
 	return controllers.ResponseSuccess(userActiveRecord, c)
@@ -111,38 +118,27 @@ func Play(c echo.Context) error {
 
 func Record(c echo.Context) error {
 	ctx := context.Background()
-	client, err := mysql.Client().Tx(ctx)
-	if err != nil {
-		mysql.Rollback(client, err)
-		return controllers.ResponseFail(err, c)
-	}
 	request := &RecordRequest{}
-	err = c.Bind(request)
+	err := c.Bind(request)
 	if err != nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	userActiveRecord, err := userActiveRecordRepository.FindByID(ctx, request.RecordID)
 	if err != nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 	if userActiveRecord == nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("userActiveRecord nil"), c)
 	}
 	if userActiveRecord.EndedAt != nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("already finished"), c)
 	}
 	user, _ := userRepository.FindBySocialUserID(ctx, request.FbUserID)
 	if user == nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("User no found: %s", request.FbUserID), c)
 	}
 	repeatStatus := user.HeroRepeat
 	if userActiveRecord.UserID != user.ID {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("Record no match user: %s", request.FbUserID), c)
 	}
 	queryBuilder := user.Update().SetHeroPlayed(1)
@@ -151,7 +147,6 @@ func Record(c echo.Context) error {
 	}
 	_, err = queryBuilder.Save(ctx)
 	if err != nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(fmt.Errorf("Change user repeat type err: %s", request.FbUserID), c)
 	}
 	now := time.Now().UTC()
@@ -162,7 +157,6 @@ func Record(c echo.Context) error {
 		SetUpdatedAt(now).
 		Save(ctx)
 	if err != nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 
@@ -175,18 +169,12 @@ func Record(c echo.Context) error {
 	queryBuilder = queryBuilder.SetUpdatedAt(now)
 	_, err = queryBuilder.Save(ctx)
 	if err != nil {
-		mysql.Rollback(client, err)
 		return controllers.ResponseFail(err, c)
 	}
 
 	countFinishedOrUnfinishedUserTotal(ctx, 1)
 	countRepeatOrNotRepeatUserTotal(ctx, repeatStatus, user.ID)
-	err = client.Commit()
-	if err != nil {
-		mysql.Rollback(client, err)
-		logger.Print("play commit err ", err.Error())
-		return controllers.ResponseFail(errors.New("play commit err "), c)
-	}
+
 	return controllers.ResponseSuccess(userActiveRecord, c)
 }
 
@@ -229,11 +217,7 @@ func Prize(c echo.Context) error {
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	prize, _ := prizeRepository.FindBySocialUserIDAndDate(ctx, request.FbUserID, now)
-	if prize != nil {
-		return controllers.ResponseFail(fmt.Errorf("User has recorded"), c)
-	}
-	prize, err = prizeRepository.Create(ctx, request.FbUserID, now)
+	prize, err := prizeRepository.Create(ctx, request.FbUserID, now)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}

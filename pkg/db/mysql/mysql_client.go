@@ -32,7 +32,7 @@ func init() {
 	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", dbUser, dbPwd, instanceConnectionName, 3306, dbName)
 	dbMaxIdleConns := 1
 	maxOpenConns := 5
-	if true {
+	if configs.EnvPath != "frankie" {
 		dataSourceName = dbURI
 		if MAX_IDLE_CONNS := os.Getenv("MAX_IDLE_CONNS"); MAX_IDLE_CONNS != "" {
 			dbMaxIdleConns, _ = strconv.Atoi(MAX_IDLE_CONNS)
@@ -42,6 +42,7 @@ func init() {
 		}
 	}
 
+	logger.Print("mysql init ", dataSourceName)
 	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
 		panic("failed connecting to mysql: " + err.Error())

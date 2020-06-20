@@ -14,6 +14,7 @@ var (
 )
 
 func init() {
+	logger.Print("config init")
 	viper.SetConfigType("yaml")
 	cacheMap = make(map[string]string)
 	if EnvPath = os.Getenv("ENV"); EnvPath == "" {

@@ -2,10 +2,12 @@ package hero
 
 import (
 	"context"
+	"errors"
 	"github.com/labstack/echo/v4"
 	"hero/controllers"
 	"hero/database/ent"
 	"hero/enums"
+	"hero/pkg/db/mysql"
 	"hero/pkg/logger"
 	"hero/repositories/user"
 	"hero/repositories/user_active_record"
@@ -40,6 +42,17 @@ type subRankResponse struct {
 	SocialEmail     string  `json:"social_email"`
 	SocialAvatarURL string  `json:"social_avatar_url"`
 	Percentage      float32 `json:"percentage"`
+}
+
+type PrizeResponse struct {
+	Total  int         `json:"total"`
+	Prizes []*prizeRow `json:"prizes"`
+}
+
+type prizeRow struct {
+	SocialID    string `json:"social_id"`
+	SocialName  string `json:"social_name"`
+	SocialEmail string `json:"social_email"`
 }
 
 func UserCount(c echo.Context) error {
@@ -124,15 +137,25 @@ func ScoreCount(c echo.Context) error {
 }
 
 func Rank(c echo.Context) error {
+	limit := 10
 	ctx := context.Background()
 	userTotal, err := user.Count(ctx)
 	socialUserID := c.QueryParam("fb_user_id")
+	limitQuery := c.QueryParam("limit")
+	logger.Print("rank limit", limitQuery)
+	if limitQuery != "" {
+		i, err := strconv.Atoi(limitQuery)
+		logger.Print("rank limit strconv err", err)
+		if err == nil {
+			limit = i
+		}
+	}
 
 	floatUserTotal := float32(userTotal)
 	if err != nil {
 		return controllers.ResponseFail(err, c)
 	}
-	rankUsers, err := user.FindByRankBetterHeroScore(ctx, 10)
+	rankUsers, err := user.FindByRankBetterHeroScore(ctx, limit)
 	subRankResp := make([]*subRankResponse, 0)
 	for _, rankUser := range rankUsers {
 		percentage := (floatUserTotal - (float32(countRankBetterME(rankUsers, rankUser.BetterHeroScore)))) / floatUserTotal * 100
@@ -176,6 +199,41 @@ func Rank(c echo.Context) error {
 	}
 
 	return controllers.ResponseSuccess(rankResponse, c)
+}
+
+func Prize(c echo.Context) error {
+	date := c.QueryParam("date")
+	logger.Print("Prize date", date)
+	if date == "" {
+		return controllers.ResponseFail(errors.New("lack date"), c)
+	}
+
+	rows, err := mysql.DB().Query(`select distinct(users.social_user_id),social_name,social_email from users
+left join prizes on users.social_user_id = prizes.social_user_id
+where prizes.date like ?`, date)
+
+	if err != nil {
+		logger.Print("db query fail", err)
+		return controllers.ResponseFail(errors.New("db query fail"), c)
+	}
+
+	defer rows.Close()
+
+	prizes := make([]*prizeRow, 0)
+	total := 0
+	for rows.Next() {
+		prize := &prizeRow{}
+		if err := rows.Scan(&prize.SocialEmail, &prize.SocialName, &prize.SocialID); err != nil {
+			logger.Print("prize rows scan err", err.Error())
+		}
+		prizes = append(prizes, prize)
+		total++
+	}
+
+	return controllers.ResponseSuccess(&PrizeResponse{
+		Prizes: prizes,
+		Total:  total,
+	}, c)
 }
 
 func countRankBetterME(rankUsers []*ent.User, meScore int) int {

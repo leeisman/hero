@@ -28,4 +28,5 @@ func initReportHero(api *echo.Group) {
 	reportHero.GET("/user_count", report.UserCount)
 	reportHero.GET("/score_count", report.ScoreCount)
 	reportHero.GET("/rank", report.Rank)
+	reportHero.GET("/prize", report.Prize)
 }

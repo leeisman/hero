@@ -58,7 +58,7 @@ func Run() error {
 	InitApi(e)
 	InitAdmin(e)
 
-	if configs.EnvPath != "local" {
+	if configs.EnvPath == "dev" {
 		port = os.Getenv("PORT")
 	}
 	return e.Start(":" + port)
@@ -66,7 +66,7 @@ func Run() error {
 
 func Shutdown() error {
 	logger.Print("showdown db ...")
-	if err:=mysql.Close();err!=nil{
+	if err := mysql.Close(); err != nil {
 		return err
 	}
 	logger.Print("showdown db done.")
