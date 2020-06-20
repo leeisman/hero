@@ -32,7 +32,7 @@ func init() {
 	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", dbUser, dbPwd, instanceConnectionName, 3306, dbName)
 	dbMaxIdleConns := 1
 	maxOpenConns := 5
-	if configs.EnvPath != "frankie" {
+	if configs.EnvPath != "frankie" && configs.EnvPath != "dev" {
 		dataSourceName = dbURI
 		if MAX_IDLE_CONNS := os.Getenv("MAX_IDLE_CONNS"); MAX_IDLE_CONNS != "" {
 			dbMaxIdleConns, _ = strconv.Atoi(MAX_IDLE_CONNS)
