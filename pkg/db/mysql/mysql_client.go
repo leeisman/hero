@@ -28,11 +28,16 @@ func init() {
 		dbName                 = "hero_dev"
 	)
 
-	//dbURI := fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s", dbUser, dbPwd, instanceConnectionName, dbName)
+	// vm 連線
 	dbURI := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", dbUser, dbPwd, instanceConnectionName, 3306, dbName)
+	if configs.EnvPath == "dev" {
+		//cloud run
+		dbURI = fmt.Sprintf("%s:%s@unix(/cloudsql/%s)/%s", dbUser, dbPwd, instanceConnectionName, dbName)
+	}
+
 	dbMaxIdleConns := 1
 	maxOpenConns := 5
-	if configs.EnvPath != "frankie" && configs.EnvPath != "dev" {
+	if configs.EnvPath != "frankie" {
 		dataSourceName = dbURI
 		if MAX_IDLE_CONNS := os.Getenv("MAX_IDLE_CONNS"); MAX_IDLE_CONNS != "" {
 			dbMaxIdleConns, _ = strconv.Atoi(MAX_IDLE_CONNS)
