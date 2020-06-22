@@ -45,6 +45,18 @@ func CountRecord(ctx context.Context, activeType string, startAt, endAt time.Tim
 		).Count(ctx)
 }
 
+func LeaveCount(ctx context.Context, activeType string, startAt, endAt time.Time) (int, error) {
+	return mysql.Client().UserActiveRecord.Query().
+		Where(
+			tableUserActiveRecord.And(
+				tableUserActiveRecord.IsFinished(0),
+				tableUserActiveRecord.ActiveType(activeType),
+				tableUserActiveRecord.CreatedAtGTE(startAt),
+				tableUserActiveRecord.CreatedAtLTE(endAt),
+			),
+		).Count(ctx)
+}
+
 func CountScore(ctx context.Context, score int, startAt, endAt string) int {
 	rows, err := mysql.DB().QueryContext(ctx, "select count(distinct(user_id)) from user_active_records where score = ? and started_at >= ? and ended_at <= ? ", score, startAt, endAt)
 	if err != nil {

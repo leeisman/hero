@@ -25,6 +25,7 @@ type UserCountResponse struct {
 	PlayGameCount       int               `json:"play_game_count"`
 	ShareCount          int               `json:"share_count"`
 	DownloadGameCount   int               `json:"download_game_count"`
+	LeaveGameCount      int               `json:"leave_game_count"`
 	StartAt             time.Time         `json:"start_at"`
 	EndAt               time.Time         `json:"end_at"`
 	Node                map[string]string `json:"node"`
@@ -102,14 +103,22 @@ func UserCount(c echo.Context) error {
 		return controllers.ResponseFail(err, c)
 	}
 
+	// 離開總人次
+	leaveGameCount, err := user_active_record.LeaveCount(ctx, enums.ActiveTypeHeroGame, startT, endT)
+	if err != nil {
+		return controllers.ResponseFail(err, c)
+	}
+
 	node := map[string]string{
-		"finished_user_count":   "總參與人數：完成遊戲的總人數，跳出不計算",
-		"repeat_user_count":     "重複玩人數：同一玩家重複完整玩完的人數",
-		"not_repeat_user_count": "不重複玩人數：玩家完整玩完的不重複玩人數",
-		"unfinished_user_count": "跳出人數：未完成遊戲的跳出人數",
-		"play_game_count":       "開始遊戲",
-		"share_count":           "分享遊戲",
-		"download_game_count":   "下載遊戲",
+		"1.finished_user_count":   "總參與人數：完成遊戲的總人數，跳出不計算",
+		"2.repeat_user_count":     "重複玩人數：同一玩家重複完整玩完的人數",
+		"3.not_repeat_user_count": "不重複玩人數：玩家完整玩完的不重複玩人數",
+		"4.unfinished_user_count": "跳出人數：未完成遊戲的跳出人數",
+		"5.play_game_count":       "開始遊戲(總人次)",
+		"6.share_count":           "分享遊戲",
+		"7.download_game_count":   "下載遊戲",
+		"8.leave_game_count":      "離開總人次",
+		"9.game_count":            "遊戲總人次",
 	}
 	response := &UserCountResponse{
 		FinishedUserCount:   repeatUserCount + notRepeatUserCount,
@@ -119,6 +128,7 @@ func UserCount(c echo.Context) error {
 		PlayGameCount:       playGameCount,
 		ShareCount:          shareCount,
 		DownloadGameCount:   downloadGameCount,
+		LeaveGameCount:      leaveGameCount,
 		StartAt:             startT,
 		EndAt:               endT,
 		Node:                node,
