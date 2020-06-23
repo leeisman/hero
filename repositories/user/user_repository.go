@@ -20,7 +20,7 @@ func FindBySocialUserID(ctx context.Context, socialUserID string) (*ent.User, er
 
 func FindByRankBetterHeroScore(ctx context.Context, limit int) ([]*ent.User, error) {
 	users, err := mysql.Client().User.Query().Where(
-		tableUser.BetterHeroScoreLT(50),
+		tableUser.BetterHeroScoreLTE(51),
 	).Order(
 		ent.Desc("better_hero_score"),
 		ent.Asc("better_hero_score_at"),
